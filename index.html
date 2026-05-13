@@ -76,7 +76,7 @@
       <div class="card">
         <div class="section-title"><h2>เพิ่มสินค้า / วัตถุดิบ</h2></div>
         <div class="row">
-          <div><label>ชื่อสินค้า</label><input id="itemName" placeholder="เช่น ขวด 270ml"></div>
+          <div><label>ชื่อสินค้า</label><select id="itemName"></select></div>
           <div><label>หมวดหมู่</label><input id="itemCat" placeholder="ขวด, ฝา, วัตถุดิบ"></div>
           <div><label>หน่วย</label><input id="itemUnit" placeholder="ขวด, ชิ้น, ลิตร, กก."></div>
         </div>
@@ -117,8 +117,8 @@
       <div class="card">
         <h2>บันทึกการหมัก</h2>
         <div class="row">
-          <div><label>เลขล็อต</label><input id="fLot" placeholder="LOT-20260513-001"></div>
-          <div><label>ประเภทการหมัก</label><input id="fType" placeholder="อินทผลัม, สับปะรด, องุ่น"></div>
+          <div><label>เลขล็อต</label><input id="fLot" placeholder="ระบบรันให้อัตโนมัติถ้าเว้นว่าง"></div>
+          <div><label>ประเภทการหมัก</label><select id="fType"></select></div>
           <div><label>สถานะ</label><select id="fStatus"><option>กำลังหมัก</option><option>หมักเสร็จ</option><option>ต้องตรวจสอบ</option></select></div>
         </div>
         <div class="row2">
@@ -164,6 +164,21 @@
 
     <section id="settings" class="page">
       <div class="card">
+        <h2>ตั้งค่า / รายการดรอปดาว</h2>
+        <div class="grid2">
+          <div>
+            <h2>ชื่อสินค้าในคลัง</h2>
+            <div class="row2"><input id="newItemOption" placeholder="เช่น ขวด 270ml"><button class="btn" onclick="addOption('itemNames')">เพิ่มชื่อสินค้า</button></div>
+            <div id="itemOptionList" style="margin-top:10px"></div>
+          </div>
+          <div>
+            <h2>ประเภทการหมัก</h2>
+            <div class="row2"><input id="newFermentOption" placeholder="เช่น อินทผลัม"><button class="btn" onclick="addOption('fermentTypes')">เพิ่มประเภท</button></div>
+            <div id="fermentOptionList" style="margin-top:10px"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
         <h2>ตั้งค่า / สำรองข้อมูล</h2>
         <p class="small">ข้อมูลเก็บในเครื่องที่เปิดใช้งาน ถ้าเปลี่ยนเครื่องควร Export หรือ Backup JSON ไว้</p>
         <div class="actions"><button class="btn green" onclick="backupJSON()">Backup JSON</button><label class="btn light" style="cursor:pointer">นำเข้า JSON<input type="file" accept="application/json" onchange="restoreJSON(event)" class="hidden"></label><button class="btn red" onclick="clearAll()">ล้างข้อมูลทั้งหมด</button></div>
@@ -174,7 +189,8 @@
 
 <script>
 const KEY='stockFermentationManagerPRO_v1';
-let db=JSON.parse(localStorage.getItem(KEY)||'{"items":[],"movements":[],"ferments":[],"notes":[]}');
+let db=JSON.parse(localStorage.getItem(KEY)||'{"items":[],"movements":[],"ferments":[],"notes":[],"itemNames":["ขวด 270ml","ฝาขวด","ฉลาก","อินทผลัม","สับปะรด","ยีสต์","น้ำตาล","ไซรัป","CO₂","แอลกอฮอล์ 95%"],"fermentTypes":["อินทผลัม","สับปะรด"]}');
+if(!db.itemNames)db.itemNames=["ขวด 270ml","ฝาขวด","ฉลาก","อินทผลัม","สับปะรด","ยีสต์","น้ำตาล","ไซรัป","CO₂","แอลกอฮอล์ 95%"];if(!db.fermentTypes)db.fermentTypes=["อินทผลัม","สับปะรด"];
 const save=()=>localStorage.setItem(KEY,JSON.stringify(db));
 const money=n=>'฿'+Number(n||0).toLocaleString('th-TH',{maximumFractionDigits:2});
 const fmtDate=v=>v?new Date(v).toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'}):'-';
@@ -182,16 +198,20 @@ const num=v=>Number(v||0);
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
 function showPage(id,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderAll()}
 function statusBadge(item){if(num(item.qty)<=0)return '<span class="badge bad">หมด</span>';if(num(item.qty)<=num(item.min))return '<span class="badge warn">ใกล้หมด</span>';return '<span class="badge ok">ปกติ</span>'}
-function addItem(){let name=itemName.value.trim();if(!name)return alert('กรุณากรอกชื่อสินค้า');db.items.push({id:uid(),name,cat:itemCat.value.trim(),unit:itemUnit.value.trim(),qty:num(itemQty.value),price:num(itemPrice.value),min:num(itemMin.value),created:new Date().toISOString()});save();['itemName','itemCat','itemUnit'].forEach(id=>document.getElementById(id).value='');itemQty.value=0;itemPrice.value=0;itemMin.value=0;renderAll()}
+function addItem(){let name=itemName.value.trim();if(!name)return alert('กรุณาเลือกชื่อสินค้า');db.items.push({id:uid(),name,cat:itemCat.value.trim(),unit:itemUnit.value.trim(),qty:num(itemQty.value),price:num(itemPrice.value),min:num(itemMin.value),created:new Date().toISOString()});save();['itemCat','itemUnit'].forEach(id=>document.getElementById(id).value='');itemQty.value=0;itemPrice.value=0;itemMin.value=0;renderAll()}
 function delItem(id){if(confirm('ลบสินค้านี้?')){db.items=db.items.filter(x=>x.id!==id);save();renderAll()}}
-function renderStock(){let q=(stockSearch?.value||'').toLowerCase();stockTable.innerHTML=db.items.filter(x=>(x.name+x.cat).toLowerCase().includes(q)).map(x=>`<tr><td><b>${x.name}</b><div class="small">หน่วย: ${x.unit||'-'}</div></td><td>${x.cat||'-'}</td><td>${num(x.qty).toLocaleString()} ${x.unit||''}</td><td>${money(x.price)}</td><td>${money(num(x.qty)*num(x.price))}</td><td>${statusBadge(x)}</td><td><button class="btn red" onclick="delItem('${x.id}')">ลบ</button></td></tr>`).join('')||'<tr><td colspan="7" class="small">ยังไม่มีสินค้า</td></tr>';
+function renderOptions(){itemName.innerHTML=db.itemNames.map(x=>`<option value="${x}">${x}</option>`).join('');fType.innerHTML=db.fermentTypes.map(x=>`<option value="${x}">${x}</option>`).join('');itemOptionList.innerHTML=db.itemNames.map(x=>`<div class="actions" style="margin-bottom:6px"><span class="badge info" style="align-self:center">${x}</span><button class="btn red" onclick="removeOption('itemNames','${x}')">ลบ</button></div>`).join('')||'<div class="small">ยังไม่มีรายการ</div>';fermentOptionList.innerHTML=db.fermentTypes.map(x=>`<div class="actions" style="margin-bottom:6px"><span class="badge info" style="align-self:center">${x}</span><button class="btn red" onclick="removeOption('fermentTypes','${x}')">ลบ</button></div>`).join('')||'<div class="small">ยังไม่มีรายการ</div>'}
+function addOption(type){let input=type==='itemNames'?newItemOption:newFermentOption;let v=input.value.trim();if(!v)return alert('กรุณากรอกข้อมูล');if(db[type].includes(v))return alert('มีรายการนี้แล้ว');db[type].push(v);input.value='';save();renderAll()}
+function removeOption(type,value){if(confirm('ลบตัวเลือกนี้?')){db[type]=db[type].filter(x=>x!==value);save();renderAll()}}
+function nextLot(){let today=new Date().toISOString().slice(0,10).replaceAll('-','');let prefix='LOT-'+today+'-';let nums=db.ferments.filter(x=>String(x.lot||'').startsWith(prefix)).map(x=>Number(String(x.lot).split('-').pop())||0);let n=(nums.length?Math.max(...nums):0)+1;return prefix+String(n).padStart(3,'0')}
+function renderStock(){renderOptions();let q=(stockSearch?.value||'').toLowerCase();stockTable.innerHTML=db.items.filter(x=>(x.name+x.cat).toLowerCase().includes(q)).map(x=>`<tr><td><b>${x.name}</b><div class="small">หน่วย: ${x.unit||'-'}</div></td><td>${x.cat||'-'}</td><td>${num(x.qty).toLocaleString()} ${x.unit||''}</td><td>${money(x.price)}</td><td>${money(num(x.qty)*num(x.price))}</td><td>${statusBadge(x)}</td><td><button class="btn red" onclick="delItem('${x.id}')">ลบ</button></td></tr>`).join('')||'<tr><td colspan="7" class="small">ยังไม่มีสินค้า</td></tr>';
 moveItem.innerHTML=db.items.map(x=>`<option value="${x.id}">${x.name} (${x.qty} ${x.unit||''})</option>`).join('')}
 function addMovement(){let id=moveItem.value, item=db.items.find(x=>x.id===id), q=num(moveQty.value);if(!item||!q)return alert('กรุณาเลือกสินค้าและจำนวน');if(moveType.value==='out'&&item.qty<q&&!confirm('จำนวนเบิกมากกว่าสต็อก ต้องการบันทึกต่อไหม?'))return;item.qty += moveType.value==='in'?q:-q;db.movements.unshift({id:uid(),date:new Date().toISOString(),type:moveType.value,itemId:id,itemName:item.name,qty:q,unit:item.unit,ref:moveRef.value,note:moveNote.value});save();moveQty.value='';moveRef.value='';moveNote.value='';renderAll()}
 function delMove(id){if(confirm('ลบรายการนี้? หมายเหตุ: จะไม่ย้อนสต็อกให้อัตโนมัติ')){db.movements=db.movements.filter(x=>x.id!==id);save();renderAll()}}
 function renderMoves(){moveTable.innerHTML=db.movements.map(x=>`<tr><td>${fmtDate(x.date)}</td><td>${x.type==='in'?'<span class="badge ok">รับเข้า</span>':'<span class="badge bad">เบิกออก</span>'}</td><td>${x.itemName}</td><td>${x.qty} ${x.unit||''}</td><td>${x.ref||'-'}</td><td>${x.note||'-'}</td><td><button class="btn red" onclick="delMove('${x.id}')">ลบ</button></td></tr>`).join('')||'<tr><td colspan="7" class="small">ยังไม่มีประวัติ</td></tr>'}
 function calcFerment(start,end,b1,b2,ph1,ph2){let days='-';if(start&&end){days=((new Date(end)-new Date(start))/(1000*60*60*24));days=isFinite(days)?Math.max(0,days):'-'}let drop=num(b1)-num(b2);let abv=Math.max(0,drop*0.59);return{days,drop,abv,phChange:num(ph2)-num(ph1)}}
 function previewFermentCalc(){let c=calcFerment(fStart.value,fEnd.value,fBrixBefore.value,fBrixAfter.value,fPhBefore.value,fPhAfter.value);calcPreview.innerHTML=`Brix ลดลง: <b>${c.drop.toFixed(2)}</b> | ABV โดยประมาณ: <b>${c.abv.toFixed(2)}%</b> | วันหมัก: <b>${c.days==='-'?'-':c.days.toFixed(1)+' วัน'}</b> | pH เปลี่ยน: <b>${c.phChange.toFixed(2)}</b>`}
-function saveFerment(){if(!fLot.value.trim())fLot.value='LOT-'+new Date().toISOString().slice(0,10).replaceAll('-','')+'-'+String(db.ferments.length+1).padStart(3,'0');let c=calcFerment(fStart.value,fEnd.value,fBrixBefore.value,fBrixAfter.value,fPhBefore.value,fPhAfter.value);db.ferments.unshift({id:uid(),lot:fLot.value.trim(),type:fType.value.trim(),status:fStatus.value,start:fStart.value,end:fEnd.value,brixBefore:num(fBrixBefore.value),phBefore:num(fPhBefore.value),brixAfter:num(fBrixAfter.value),phAfter:num(fPhAfter.value),temp:fTemp.value,psi:fPsi.value,note:fNote.value,days:c.days,drop:c.drop,abv:c.abv,created:new Date().toISOString()});save();['fLot','fType','fStart','fEnd','fBrixBefore','fPhBefore','fBrixAfter','fPhAfter','fTemp','fPsi','fNote'].forEach(id=>document.getElementById(id).value='');calcPreview.innerHTML='';renderAll()}
+function saveFerment(){if(!fLot.value.trim())fLot.value=nextLot();let c=calcFerment(fStart.value,fEnd.value,fBrixBefore.value,fBrixAfter.value,fPhBefore.value,fPhAfter.value);db.ferments.unshift({id:uid(),lot:fLot.value.trim(),type:fType.value.trim(),status:fStatus.value,start:fStart.value,end:fEnd.value,brixBefore:num(fBrixBefore.value),phBefore:num(fPhBefore.value),brixAfter:num(fBrixAfter.value),phAfter:num(fPhAfter.value),temp:fTemp.value,psi:fPsi.value,note:fNote.value,days:c.days,drop:c.drop,abv:c.abv,created:new Date().toISOString()});save();['fLot','fType','fStart','fEnd','fBrixBefore','fPhBefore','fBrixAfter','fPhAfter','fTemp','fPsi','fNote'].forEach(id=>document.getElementById(id).value='');calcPreview.innerHTML='';renderAll()}
 function delFerment(id){if(confirm('ลบบันทึกการหมักนี้?')){db.ferments=db.ferments.filter(x=>x.id!==id);save();renderAll()}}
 function renderFerments(){fermentTable.innerHTML=db.ferments.map(x=>`<tr><td><b>${x.lot}</b><div class="small">${x.note||''}</div></td><td>${x.type||'-'}</td><td>${fmtDate(x.start)}</td><td>${fmtDate(x.end)}</td><td>${x.brixBefore} → ${x.brixAfter}<div class="small">ลด ${Number(x.drop||0).toFixed(2)}</div></td><td>${x.phBefore} → ${x.phAfter}</td><td>${x.days==='-'?'-':Number(x.days).toFixed(1)}</td><td><b>${Number(x.abv||0).toFixed(2)}%</b></td><td>${x.status==='หมักเสร็จ'?'<span class="badge ok">หมักเสร็จ</span>':x.status==='ต้องตรวจสอบ'?'<span class="badge bad">ต้องตรวจสอบ</span>':'<span class="badge info">กำลังหมัก</span>'}</td><td><button class="btn red" onclick="delFerment('${x.id}')">ลบ</button></td></tr>`).join('')||'<tr><td colspan="10" class="small">ยังไม่มีบันทึกการหมัก</td></tr>'}
 function addNote(){if(!noteTitle.value.trim())return alert('กรุณากรอกหัวข้อ');db.notes.unshift({id:uid(),date:new Date().toISOString(),title:noteTitle.value,cat:noteCat.value,text:noteText.value});save();noteTitle.value='';noteCat.value='';noteText.value='';renderAll()}
