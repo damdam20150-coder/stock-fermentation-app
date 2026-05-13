@@ -52,7 +52,7 @@
 
     <section id="ferment" class="page">
       <div class="card"><h2>บันทึกการหมัก</h2><div class="row"><div><label>เลขล็อต</label><input id="fLot" placeholder="LOT-20260513-001" /></div><div><label>ประเภทการหมัก</label><select id="fType"></select></div><div><label>สถานะ</label><select id="fStatus"><option>กำลังหมัก</option><option>หมักเสร็จ</option><option>ต้องตรวจสอบ</option></select></div></div><div class="row2"><div><label>ผู้รับผิดชอบ</label><input id="fPerson" placeholder="ชื่อผู้รับผิดชอบ" /></div><div><label>อุณหภูมิเริ่มต้น °C</label><input id="fTemp" type="number" step="0.1" /></div></div><div class="row2"><div><label>วัน/เวลา ที่เริ่มหมัก</label><input id="fStart" type="datetime-local" /></div><div><label>วัน/เวลา ที่หมักเสร็จ</label><input id="fEnd" type="datetime-local" /></div></div><div class="row"><div><label>Brix ก่อนหมัก</label><input id="fBrixBefore" type="number" step="0.01" /></div><div><label>pH ก่อนหมัก</label><input id="fPhBefore" type="number" step="0.01" /></div><div><label>หมายเหตุเพิ่มเติม</label><input id="fExtra" placeholder="เช่น กลิ่น สี หรือรสชาติ" /></div></div><div class="row2"><div><label>Brix หลังหมัก</label><input id="fBrixAfter" type="number" step="0.01" /></div><div><label>pH หลังหมัก</label><input id="fPhAfter" type="number" step="0.01" /></div></div><label>หมายเหตุ</label><textarea id="fNote"></textarea><div class="actions" style="margin-top:10px"><button class="btn" onclick="saveFerment()">บันทึกการหมัก</button><button class="btn light" onclick="previewFermentCalc()">คำนวณดูก่อน</button></div><div id="calcPreview" class="small" style="margin-top:10px"></div></div>
-      <div class="card"><h2>ประวัติการหมัก</h2><div class="table-wrap"><table><thead><tr><th>ล็อต</th><th>ประเภท</th><th>ผู้รับผิดชอบ</th><th>เริ่ม</th><th>เสร็จ</th><th>Brix</th><th>pH</th><th>วัน</th><th>ABV</th><th>สถานะ</th><th></th></tr></thead><tbody id="fermentTable"></tbody></table></div></div>
+      <div class="card"><h2>ประวัติการหมัก</h2><div class="table-wrap"><table><thead><tr><th>ล็อต</th><th>ประเภท</th><th>ผู้รับผิดชอบ</th><th>เริ่ม</th><th>เสร็จ</th><th>Brix</th><th>pH</th><th>วัน</th><th>ABV</th><th>สถานะ</th><th>เปลี่ยนสถานะ</th><th></th></tr></thead><tbody id="fermentTable"></tbody></table></div></div>
     </section>
 
     <section id="notes" class="page"><div class="card"><h2>บันทึกข้อมูลทั่วไป</h2><div class="row"><div><label>หัวข้อ</label><input id="noteTitle" /></div><div><label>หมวด</label><input id="noteCat" /></div><div><label>ผู้รับผิดชอบ</label><input id="notePerson" /></div></div><label>รายละเอียด</label><textarea id="noteText"></textarea><button class="btn" onclick="addNote()">บันทึกโน้ต</button></div><div class="card"><h2>รายการบันทึก</h2><div id="noteList"></div></div></section>
@@ -240,6 +240,15 @@
       var c = calcFerment($('fStart').value, $('fEnd').value, $('fBrixBefore').value, $('fBrixAfter').value, $('fPhBefore').value, $('fPhAfter').value);
       $('calcPreview').innerHTML = 'Brix ลดลง: <b>' + c.drop.toFixed(2) + '</b> | ABV ประมาณ: <b>' + c.abv.toFixed(2) + '%</b> | วันหมัก: <b>' + (c.days === '-' ? '-' : c.days.toFixed(1) + ' วัน') + '</b> | pH เปลี่ยน: <b>' + c.phChange.toFixed(2) + '</b>';
     }
+    function updateFermentStatus(id,status){
+      var item = db.ferments.find(function(x){ return x.id === id; });
+      if(!item) return;
+      item.status = status;
+      item.statusUpdatedAt = new Date().toISOString();
+      save();
+      renderAll();
+    }
+
     function saveFerment(){
       if (!$('fLot').value.trim()) $('fLot').value = nextLot();
       var c = calcFerment($('fStart').value, $('fEnd').value, $('fBrixBefore').value, $('fBrixAfter').value, $('fPhBefore').value, $('fPhAfter').value);
@@ -257,9 +266,9 @@
       var rows = db.ferments.map(function(x){
         var status = x.status === 'หมักเสร็จ' ? '<span class="badge ok">หมักเสร็จ</span>' : (x.status === 'ต้องตรวจสอบ' ? '<span class="badge bad">ต้องตรวจสอบ</span>' : '<span class="badge info">กำลังหมัก</span>');
         var daysText = x.days === '-' ? '-' : Number(x.days).toFixed(1);
-        return '<tr><td><b>' + esc(x.lot) + '</b></td><td>' + esc(x.type) + '</td><td>' + esc(x.person || '-') + '</td><td>' + fmtDate(x.start) + '</td><td>' + fmtDate(x.end) + '</td><td>' + esc(x.brixBefore) + ' &rarr; ' + esc(x.brixAfter) + '<div class="small">ลด ' + Number(x.drop || 0).toFixed(2) + '</div></td><td>' + esc(x.phBefore) + ' &rarr; ' + esc(x.phAfter) + '</td><td>' + daysText + '</td><td><b>' + Number(x.abv || 0).toFixed(2) + '%</b></td><td>' + status + '</td><td><button class="btn red" onclick="delFerment(\'' + esc(x.id) + '\')">ลบ</button></td></tr>';
+        return '<tr><td><b>' + esc(x.lot) + '</b></td><td>' + esc(x.type) + '</td><td>' + esc(x.person || '-') + '</td><td>' + fmtDate(x.start) + '</td><td>' + fmtDate(x.end) + '</td><td>' + esc(x.brixBefore) + ' &rarr; ' + esc(x.brixAfter) + '<div class="small">ลด ' + Number(x.drop || 0).toFixed(2) + '</div></td><td>' + esc(x.phBefore) + ' &rarr; ' + esc(x.phAfter) + '</td><td>' + daysText + '</td><td><b>' + Number(x.abv || 0).toFixed(2) + '%</b></td><td>' + status + '</td><td><select onchange="updateFermentStatus(\'' + esc(x.id) + '\',this.value)"><option value="กำลังหมัก" ' + (x.status==='กำลังหมัก'?'selected':'') + '>กำลังหมัก</option><option value="หมักเสร็จ" ' + (x.status==='หมักเสร็จ'?'selected':'') + '>หมักเสร็จ</option><option value="ต้องตรวจสอบ" ' + (x.status==='ต้องตรวจสอบ'?'selected':'') + '>ต้องตรวจสอบ</option></select></td><td><button class="btn red" onclick="delFerment(\'' + esc(x.id) + '\')">ลบ</button></td></tr>';
       }).join('');
-      $('fermentTable').innerHTML = rows || '<tr><td colspan="11" class="small">ยังไม่มีข้อมูล</td></tr>';
+      $('fermentTable').innerHTML = rows || '<tr><td colspan="12" class="small">ยังไม่มีข้อมูล</td></tr>';
     }
 
     function addNote(){
