@@ -1,253 +1,56 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Stock & Fermentation Manager PRO</title>
-  <style>
-    :root{
-      --bg:#f4f7fb;--card:#fff;--text:#182230;--muted:#667085;--primary:#2563eb;--primary2:#1d4ed8;--green:#16a34a;--red:#dc2626;--yellow:#ca8a04;--line:#e5e7eb;--dark:#0f172a;
-    }
-    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    html{scroll-behavior:smooth}
-    body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);font-size:16px;padding-bottom:78px}
-    header{background:linear-gradient(135deg,#0f172a,#2563eb);color:#fff;padding:16px 14px 18px;position:sticky;top:0;z-index:5;box-shadow:0 4px 18px rgba(15,23,42,.18)}
-    header h1{font-size:18px;margin:0 0 5px;line-height:1.25}header p{margin:0;font-size:12px;opacity:.9;line-height:1.35}
-    nav{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:7px;background:#fff;border-top:1px solid var(--line);position:fixed;left:0;right:0;bottom:0;top:auto;z-index:20;box-shadow:0 -6px 20px rgba(15,23,42,.12)}
-    nav button{border:0;background:#fff;color:#475467;padding:8px 3px;border-radius:12px;font-weight:800;font-size:11px;white-space:normal;line-height:1.15;min-height:48px}
-    nav button.active{background:var(--primary);color:#fff}
-    main{padding:12px;max-width:1100px;margin:auto}.page{display:none}.page.active{display:block}
-    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.grid2{display:grid;grid-template-columns:1fr;gap:10px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:13px;box-shadow:0 8px 22px rgba(15,23,42,.05);margin-bottom:10px}
-    .stat{min-height:88px}.stat b{font-size:23px;display:block;margin-top:8px;word-break:break-word}.stat span{color:var(--muted);font-size:13px}
-    h2{font-size:18px;margin:4px 0 12px}.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
-    input,select,textarea{width:100%;padding:13px 12px;border:1px solid #d0d5dd;border-radius:13px;background:#fff;font-size:16px;min-height:48px}textarea{min-height:92px;resize:vertical}
-    label{font-size:13px;color:#475467;font-weight:800;margin:9px 0 5px;display:block}
-    .row,.row2{display:grid;grid-template-columns:1fr;gap:8px}
-    .btn{border:0;border-radius:13px;padding:13px 15px;font-weight:900;background:var(--primary);color:white;cursor:pointer;min-height:48px;font-size:15px;width:100%}.btn:hover{background:var(--primary2)}
-    .btn.green{background:var(--green)}.btn.red{background:var(--red)}.btn.gray{background:#475467}.btn.yellow{background:#d97706}.btn.light{background:#eef2ff;color:#1e3a8a}
-    table{width:100%;border-collapse:collapse;font-size:14px;min-width:760px}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{color:#475467;background:#f9fafb;position:sticky;top:0;z-index:1}.table-wrap{overflow:auto;max-height:520px;border-radius:14px;border:1px solid var(--line);-webkit-overflow-scrolling:touch;background:#fff}
-    .badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:900}.ok{background:#dcfce7;color:#166534}.warn{background:#fef3c7;color:#92400e}.bad{background:#fee2e2;color:#991b1b}.info{background:#dbeafe;color:#1e40af}
-    .actions{display:grid;grid-template-columns:1fr;gap:8px}.small{font-size:13px;color:var(--muted);line-height:1.5}.footer-space{height:40px}.hidden{display:none!important}
-    .mobile-hint{font-size:12px;color:#667085;margin:6px 0 8px}
-
-    @media(min-width:760px){
-      body{padding-bottom:0}.grid{grid-template-columns:repeat(4,1fr)}.grid2{grid-template-columns:repeat(2,1fr)}.row{grid-template-columns:repeat(3,1fr)}.row2{grid-template-columns:repeat(2,1fr)}.actions{display:flex;flex-wrap:wrap}.btn{width:auto}nav{display:flex;gap:8px;overflow-x:auto;padding:10px 10px;background:#fff;border-bottom:1px solid var(--line);border-top:0;position:sticky;top:76px;z-index:4;box-shadow:none}nav button{background:#eef2ff;color:#1e3a8a;padding:10px 12px;border-radius:999px;white-space:nowrap;font-size:14px;min-height:auto}nav button.active{background:var(--primary);color:#fff}header h1{font-size:20px}header p{font-size:13px}table{min-width:0}.table-wrap{max-height:520px}main{padding:14px}.card{padding:14px}
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock & Fermentation Manager PRO</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--text:#182230;--muted:#667085;--primary:#2563eb;--green:#16a34a;--red:#dc2626;--yellow:#d97706;--line:#e5e7eb}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text);padding-bottom:78px}header{background:linear-gradient(135deg,#0f172a,#2563eb);color:white;padding:16px 14px;position:sticky;top:0;z-index:5}header h1{font-size:18px;margin:0 0 4px}header p{font-size:12px;margin:0;opacity:.9}nav{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:7px;background:white;border-top:1px solid var(--line);position:fixed;left:0;right:0;bottom:0;z-index:20;box-shadow:0 -6px 18px rgba(15,23,42,.12)}nav button{border:0;background:white;color:#475467;padding:8px 3px;border-radius:12px;font-weight:900;font-size:11px;line-height:1.15;min-height:48px}nav button.active{background:var(--primary);color:white}main{padding:12px;max-width:1100px;margin:auto}.page{display:none}.page.active{display:block}.card{background:white;border:1px solid var(--line);border-radius:18px;padding:13px;margin-bottom:10px;box-shadow:0 8px 22px rgba(15,23,42,.05)}h2{font-size:18px;margin:4px 0 12px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.grid2,.row,.row2{display:grid;grid-template-columns:1fr;gap:8px}.stat{min-height:88px}.stat span,.small{font-size:13px;color:var(--muted);line-height:1.5}.stat b{font-size:23px;display:block;margin-top:8px}label{font-size:13px;color:#475467;font-weight:900;margin:9px 0 5px;display:block}input,select,textarea{width:100%;padding:13px 12px;border:1px solid #d0d5dd;border-radius:13px;background:white;font-size:16px;min-height:48px}textarea{min-height:92px;resize:vertical}.btn{border:0;border-radius:13px;padding:13px 15px;font-weight:900;background:var(--primary);color:white;min-height:48px;font-size:15px;width:100%;cursor:pointer}.btn.green{background:var(--green)}.btn.red{background:var(--red)}.btn.yellow{background:var(--yellow)}.btn.gray{background:#475467}.btn.light{background:#eef2ff;color:#1e3a8a}.actions{display:grid;grid-template-columns:1fr;gap:8px}.table-wrap{overflow:auto;max-height:520px;border:1px solid var(--line);border-radius:14px;background:white;-webkit-overflow-scrolling:touch}table{width:100%;border-collapse:collapse;min-width:760px;font-size:14px}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:#f9fafb;color:#475467;position:sticky;top:0}.badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:900}.ok{background:#dcfce7;color:#166534}.warn{background:#fef3c7;color:#92400e}.bad{background:#fee2e2;color:#991b1b}.info{background:#dbeafe;color:#1e40af}.hidden{display:none!important}@media(min-width:760px){body{padding-bottom:0}.grid{grid-template-columns:repeat(4,1fr)}.grid2{grid-template-columns:repeat(2,1fr)}.row{grid-template-columns:repeat(3,1fr)}.row2{grid-template-columns:repeat(2,1fr)}.actions{display:flex;flex-wrap:wrap}.btn{width:auto}nav{display:flex;gap:8px;overflow-x:auto;padding:10px;background:white;border-bottom:1px solid var(--line);border-top:0;position:sticky;top:73px;box-shadow:none}nav button{background:#eef2ff;color:#1e3a8a;border-radius:999px;font-size:14px;white-space:nowrap;min-height:auto;padding:10px 12px}nav button.active{background:var(--primary);color:white}main{padding:14px}table{min-width:0}}
+</style>
 </head>
 <body>
-  <header>
-    <h1>Stock & Fermentation Manager PRO</h1>
-    <p>ระบบเช็คสต็อกสินค้า + บันทึกการหมัก + คำนวณ %แอลกอฮอล์</p>
-  </header>
-  <nav id="tabs">
-    <button class="active" onclick="showPage('dashboard',this)">หน้าแรก</button>
-    <button onclick="showPage('stock',this)">คลังสินค้า</button>
-    <button onclick="showPage('movement',this)">รับเข้า/เบิกออก</button>
-    <button onclick="showPage('ferment',this)">บันทึกการหมัก</button>
-    <button onclick="showPage('notes',this)">บันทึกข้อมูล</button>
-    <button onclick="showPage('reports',this)">รายงาน/Export</button>
-    <button onclick="showPage('settings',this)">ตั้งค่า</button>
-  </nav>
-
-  <main>
-    <section id="dashboard" class="page active">
-      <h2>Dashboard</h2>
-      <div class="grid">
-        <div class="card stat"><span>จำนวนสินค้า</span><b id="dashItems">0</b></div>
-        <div class="card stat"><span>มูลค่าสต็อกรวม</span><b id="dashValue">฿0</b></div>
-        <div class="card stat"><span>สินค้าใกล้หมด</span><b id="dashLow">0</b></div>
-        <div class="card stat"><span>ล็อตกำลังหมัก</span><b id="dashFermenting">0</b></div>
-      </div>
-      <div class="grid2" style="margin-top:12px">
-        <div class="card">
-          <div class="section-title"><h2>สินค้าใกล้หมด</h2></div>
-          <div id="lowStockList" class="small">ยังไม่มีข้อมูล</div>
-        </div>
-        <div class="card">
-          <div class="section-title"><h2>ล็อตหมักล่าสุด</h2></div>
-          <div id="recentFerments" class="small">ยังไม่มีข้อมูล</div>
-        </div>
-      </div>
-    </section>
-
-    <section id="stock" class="page">
-      <div class="card">
-        <div class="section-title"><h2>เพิ่มสินค้า / วัตถุดิบ</h2></div>
-        <div class="row">
-          <div><label>ชื่อสินค้า</label><select id="itemName"></select></div>
-          <div><label>หมวดหมู่</label><select id="itemCat"><option>บรรจุภัณฑ์</option><option>ฉลาก</option><option>วัตถุดิบ</option><option>ไซรัป</option></select></div>
-          <div><label>หน่วย</label><input id="itemUnit" placeholder="ขวด, ชิ้น, ลิตร, กก."></div>
-        </div>
-        <div class="row">
-          <div><label>จำนวนเริ่มต้น</label><input id="itemQty" type="number" step="0.01" value="0"></div>
-          <div><label>ราคาต่อหน่วย</label><input id="itemPrice" type="number" step="0.01" value="0"></div>
-          <div><label>แจ้งเตือนขั้นต่ำ</label><input id="itemMin" type="number" step="0.01" value="0"></div>
-        </div>
-        <div style="margin-top:10px"><button class="btn" onclick="addItem()">+ เพิ่มสินค้า</button></div>
-      </div>
-      <div class="card" style="margin-top:12px">
-        <div class="section-title"><h2>รายการสินค้า</h2><input id="stockSearch" oninput="renderAll()" placeholder="ค้นหาสินค้า..." style="max-width:260px"></div>
-        <div class="table-wrap"><table><thead><tr><th>สินค้า</th><th>หมวด</th><th>คงเหลือ</th><th>ราคา</th><th>มูลค่า</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="stockTable"></tbody></table></div>
-      </div>
-    </section>
-
-    <section id="movement" class="page">
-      <div class="card">
-        <h2>รับเข้า / เบิกออก</h2>
-        <div class="row">
-          <div><label>ประเภท</label><select id="moveType"><option value="in">รับเข้า</option><option value="out">เบิกออก</option></select></div>
-          <div><label>สินค้า</label><select id="moveItem"></select></div>
-          <div><label>จำนวน</label><input id="moveQty" type="number" step="0.01"></div>
-        </div>
-        <div class="row2">
-          <div><label>งาน/ล็อต/ซัพพลายเออร์</label><input id="moveRef" placeholder="เช่น LOT-001 / ร้านขวด"></div>
-          <div><label>หมายเหตุ</label><input id="moveNote" placeholder="รายละเอียดเพิ่มเติม"></div>
-        </div>
-        <div style="margin-top:10px"><button class="btn green" onclick="addMovement()">บันทึกรายการ</button></div>
-      </div>
-      <div class="card" style="margin-top:12px">
-        <h2>ประวัติรับเข้า/เบิกออก</h2>
-        <div class="table-wrap"><table><thead><tr><th>วันเวลา</th><th>ประเภท</th><th>สินค้า</th><th>จำนวน</th><th>อ้างอิง</th><th>หมายเหตุ</th><th></th></tr></thead><tbody id="moveTable"></tbody></table></div>
-      </div>
-    </section>
-
-    <section id="ferment" class="page">
-      <div class="card">
-        <h2>บันทึกการหมัก</h2>
-        <div class="row">
-          <div><label>เลขล็อต</label><input id="fLot" placeholder="ระบบรันให้อัตโนมัติถ้าเว้นว่าง"></div>
-          <div><label>ประเภทการหมัก</label><select id="fType"></select></div>
-          <div><label>สถานะ</label><select id="fStatus"><option>กำลังหมัก</option><option>หมักเสร็จ</option><option>ต้องตรวจสอบ</option></select></div>
-        </div>
-        <div class="row2">
-          <div><label>วัน/เวลา ที่เริ่มหมัก</label><input id="fStart" type="datetime-local"></div>
-          <div><label>วัน/เวลา ที่หมักเสร็จ</label><input id="fEnd" type="datetime-local"></div>
-        </div>
-        <div class="row">
-          <div><label>Brix ก่อนหมัก</label><input id="fBrixBefore" type="number" step="0.01"></div>
-          <div><label>pH ก่อนหมัก</label><input id="fPhBefore" type="number" step="0.01"></div>
-          <div><label>อุณหภูมิเริ่มต้น °C</label><input id="fTemp" type="number" step="0.1"></div>
-        </div>
-        <div class="row">
-          <div><label>Brix หลังหมัก</label><input id="fBrixAfter" type="number" step="0.01"></div>
-          <div><label>pH หลังหมัก</label><input id="fPhAfter" type="number" step="0.01"></div>
-          <div><label>หมายเหตุเพิ่มเติม</label><input id="fExtra" placeholder="เช่น กลิ่น สี หรือรสชาติ"></div>
-        </div>
-        <label>หมายเหตุ สี กลิ่น รสชาติ ปัญหา</label><textarea id="fNote"></textarea>
-        <div style="margin-top:10px" class="actions"><button class="btn" onclick="saveFerment()">บันทึกการหมัก</button><button class="btn light" onclick="previewFermentCalc()">คำนวณดูก่อน</button></div>
-        <div id="calcPreview" class="small" style="margin-top:10px"></div>
-      </div>
-      <div class="card" style="margin-top:12px">
-        <h2>ประวัติการหมัก</h2>
-        <div class="table-wrap"><table><thead><tr><th>ล็อต</th><th>ประเภท</th><th>เริ่ม</th><th>เสร็จ</th><th>Brix</th><th>pH</th><th>วันหมัก</th><th>ABV</th><th>สถานะ</th><th></th></tr></thead><tbody id="fermentTable"></tbody></table></div>
-      </div>
-    </section>
-
-    <section id="notes" class="page">
-      <div class="card">
-        <h2>บันทึกข้อมูลทั่วไป</h2>
-        <div class="row2"><div><label>หัวข้อ</label><input id="noteTitle" placeholder="สูตรทดลอง / ปัญหา / ซัพพลายเออร์"></div><div><label>หมวด</label><input id="noteCat" placeholder="สูตร, QC, เครื่องจักร, อื่น ๆ"></div></div>
-        <label>รายละเอียด</label><textarea id="noteText"></textarea>
-        <button class="btn" onclick="addNote()">บันทึกโน้ต</button>
-      </div>
-      <div class="card" style="margin-top:12px"><h2>รายการบันทึก</h2><div id="noteList"></div></div>
-    </section>
-
-    <section id="reports" class="page">
-      <div class="grid2">
-        <div class="card"><h2>Export ข้อมูล</h2><p class="small">ไฟล์ CSV เปิดใน Excel / Google Sheet ได้</p><div class="actions"><button class="btn" onclick="exportCSV('items')">Export สต็อก</button><button class="btn" onclick="exportCSV('movements')">Export รับเข้า/เบิกออก</button><button class="btn" onclick="exportCSV('ferments')">Export การหมัก</button><button class="btn" onclick="exportCSV('notes')">Export โน้ต</button></div></div>
-        <div class="card"><h2>สรุป</h2><div id="reportSummary" class="small"></div></div>
-      </div>
-    </section>
-
-    <section id="settings" class="page">
-      <div class="card">
-        <h2>ตั้งค่า / รายการดรอปดาว</h2>
-        <div class="grid2">
-          <div>
-            <h2>ชื่อสินค้าในคลัง</h2>
-            <div class="row2"><input id="newItemOption" placeholder="เช่น ขวด 270ml"><button class="btn" onclick="addOption('itemNames')">เพิ่มชื่อสินค้า</button></div>
-            <div id="itemOptionList" style="margin-top:10px"></div>
-          </div>
-          <div>
-            <h2>ประเภทการหมัก</h2>
-            <div class="row2"><input id="newFermentOption" placeholder="เช่น อินทผลัม"><button class="btn" onclick="addOption('fermentTypes')">เพิ่มประเภท</button></div>
-            <div id="fermentOptionList" style="margin-top:10px"></div>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <h2>ตั้งค่า / สำรองข้อมูล</h2>
-        <p class="small">ข้อมูลเก็บในเครื่องที่เปิดใช้งาน ถ้าเปลี่ยนเครื่องควร Export หรือ Backup JSON ไว้</p>
-        <div class="actions"><button class="btn green" onclick="backupJSON()">Backup JSON</button><label class="btn light" style="cursor:pointer">นำเข้า JSON<input type="file" accept="application/json" onchange="restoreJSON(event)" class="hidden"></label><button class="btn red" onclick="clearAll()">ล้างข้อมูลทั้งหมด</button></div>
-      </div>
-    </section>
-    <div class="footer-space"></div>
-  </main>
-
+<header><h1>Stock & Fermentation Manager PRO</h1><p>คลังสินค้า + เครื่องดื่มพร้อมจำหน่าย + บันทึกการหมัก + หลังบ้านรหัส 4842</p></header>
+<nav><button class="active" onclick="showPage('dashboard',this)">หน้าแรก</button><button onclick="showPage('stock',this)">คลัง</button><button onclick="showPage('movement',this)">รับ/เบิก</button><button onclick="showPage('ferment',this)">หมัก</button><button onclick="showPage('notes',this)">บันทึก</button><button onclick="showPage('reports',this)">รายงาน</button><button onclick="showPage('settings',this)">ตั้งค่า</button></nav>
+<main>
+<section id="dashboard" class="page active"><h2>Dashboard</h2><div class="grid"><div class="card stat"><span>สินค้าในคลัง</span><b id="dashItems">0</b></div><div class="card stat"><span>เครื่องดื่มพร้อมขาย</span><b id="dashDrinks">0</b></div><div class="card stat"><span>สินค้าใกล้หมด</span><b id="dashLow">0</b></div><div class="card stat"><span>ล็อตกำลังหมัก</span><b id="dashFermenting">0</b></div></div><div class="grid2" style="margin-top:10px"><div class="card"><h2>สินค้าใกล้หมด</h2><div id="lowStockList" class="small">ยังไม่มีข้อมูล</div></div><div class="card"><h2>ล็อตหมักล่าสุด</h2><div id="recentFerments" class="small">ยังไม่มีข้อมูล</div></div></div></section>
+<section id="stock" class="page"><div class="card"><h2>เพิ่มสินค้าเข้าคลัง</h2><div class="row"><div><label>ชื่อสินค้า</label><select id="itemName" onchange="syncCategory()"></select></div><div><label>หมวดหมู่</label><select id="itemCat" disabled><option>บรรจุภัณฑ์</option><option>ฉลาก</option><option>วัตถุดิบ</option></select></div><div><label>หน่วย</label><input id="itemUnit" disabled placeholder="ระบบเลือกให้อัตโนมัติ"></div></div><div class="row2"><div><label>จำนวนเริ่มต้น</label><input id="itemQty" type="number" step="0.01" value="0"></div><div><label>ผู้รับผิดชอบ</label><input id="itemPerson" placeholder="ชื่อผู้บันทึก"></div></div><div style="margin-top:10px"><button class="btn" onclick="addItem()">+ เพิ่มสินค้า</button></div></div><div class="card"><h2>รายการสินค้า</h2><input id="stockSearch" oninput="renderAll()" placeholder="ค้นหาสินค้า..." style="margin-bottom:8px"><div class="table-wrap"><table><thead><tr><th>สินค้า</th><th>หมวด</th><th>คงเหลือ</th><th>ขั้นต่ำ</th><th>สถานะ</th><th>ผู้รับผิดชอบ</th><th>จัดการ</th></tr></thead><tbody id="stockTable"></tbody></table></div></div></section>
+<section id="movement" class="page"><div class="card"><h2>รับเข้า / เบิกออก เครื่องดื่มพร้อมจำหน่าย</h2><p class="small">ใช้เฉพาะ 5 ตัว: อินทผลัม, พีช, เสาวรส, องุ่น, สตอเบอรี่</p><div class="row"><div><label>ประเภท</label><select id="moveType"><option value="in">รับเข้า</option><option value="out">เบิกออก</option></select></div><div><label>เครื่องดื่มพร้อมจำหน่าย</label><select id="moveItem"></select></div><div><label>จำนวน</label><input id="moveQty" type="number" step="1" placeholder="จำนวนขวด"></div></div><div class="row"><div><label>ผู้รับผิดชอบ</label><input id="movePerson" placeholder="ชื่อผู้รับผิดชอบ"></div><div><label>งาน/ล็อต/ลูกค้า</label><input id="moveRef" placeholder="เช่น LOT-001 / ลูกค้า"></div><div><label>หมายเหตุ</label><input id="moveNote"></div></div><div style="margin-top:10px"><button class="btn green" onclick="addMovement()">บันทึกรายการ</button></div></div><div class="card"><h2>ประวัติรับเข้า/เบิกออก</h2><div class="table-wrap"><table><thead><tr><th>วันเวลา</th><th>ประเภท</th><th>สินค้า</th><th>จำนวน</th><th>ผู้รับผิดชอบ</th><th>อ้างอิง</th><th>หมายเหตุ</th><th></th></tr></thead><tbody id="moveTable"></tbody></table></div></div></section>
+<section id="ferment" class="page"><div class="card"><h2>บันทึกการหมัก</h2><div class="row"><div><label>เลขล็อต</label><input id="fLot" placeholder="LOT-20260513-001"></div><div><label>ประเภทการหมัก</label><select id="fType"></select></div><div><label>สถานะ</label><select id="fStatus"><option>กำลังหมัก</option><option>หมักเสร็จ</option><option>ต้องตรวจสอบ</option></select></div></div><div class="row2"><div><label>ผู้รับผิดชอบ</label><input id="fPerson" placeholder="ชื่อผู้รับผิดชอบ"></div><div><label>อุณหภูมิเริ่มต้น °C</label><input id="fTemp" type="number" step="0.1"></div></div><div class="row2"><div><label>วัน/เวลา ที่เริ่มหมัก</label><input id="fStart" type="datetime-local"></div><div><label>วัน/เวลา ที่หมักเสร็จ</label><input id="fEnd" type="datetime-local"></div></div><div class="row"><div><label>Brix ก่อนหมัก</label><input id="fBrixBefore" type="number" step="0.01"></div><div><label>pH ก่อนหมัก</label><input id="fPhBefore" type="number" step="0.01"></div><div><label>หมายเหตุเพิ่มเติม</label><input id="fExtra" placeholder="เช่น กลิ่น สี หรือรสชาติ"></div></div><div class="row2"><div><label>Brix หลังหมัก</label><input id="fBrixAfter" type="number" step="0.01"></div><div><label>pH หลังหมัก</label><input id="fPhAfter" type="number" step="0.01"></div></div><label>หมายเหตุ</label><textarea id="fNote"></textarea><div class="actions" style="margin-top:10px"><button class="btn" onclick="saveFerment()">บันทึกการหมัก</button><button class="btn light" onclick="previewFermentCalc()">คำนวณดูก่อน</button></div><div id="calcPreview" class="small" style="margin-top:10px"></div></div><div class="card"><h2>ประวัติการหมัก</h2><div class="table-wrap"><table><thead><tr><th>ล็อต</th><th>ประเภท</th><th>ผู้รับผิดชอบ</th><th>เริ่ม</th><th>เสร็จ</th><th>Brix</th><th>pH</th><th>วัน</th><th>ABV</th><th>สถานะ</th><th></th></tr></thead><tbody id="fermentTable"></tbody></table></div></div></section>
+<section id="notes" class="page"><div class="card"><h2>บันทึกข้อมูลทั่วไป</h2><div class="row"><div><label>หัวข้อ</label><input id="noteTitle"></div><div><label>หมวด</label><input id="noteCat"></div><div><label>ผู้รับผิดชอบ</label><input id="notePerson"></div></div><label>รายละเอียด</label><textarea id="noteText"></textarea><button class="btn" onclick="addNote()">บันทึกโน้ต</button></div><div class="card"><h2>รายการบันทึก</h2><div id="noteList"></div></div></section>
+<section id="reports" class="page"><div class="grid2"><div class="card"><h2>Export ข้อมูล</h2><p class="small">ไฟล์ CSV เปิดใน Excel / Google Sheet ได้</p><div class="actions"><button class="btn" onclick="exportCSV('items')">Export คลัง</button><button class="btn" onclick="exportCSV('movements')">Export รับ/เบิก</button><button class="btn" onclick="exportCSV('ferments')">Export หมัก</button><button class="btn" onclick="exportCSV('notes')">Export โน้ต</button></div></div><div class="card"><h2>สรุป</h2><div id="reportSummary" class="small"></div></div></div></section>
+<section id="settings" class="page"><div class="card"><h2>ตั้งค่าหลังบ้าน</h2><p class="small">ต้องใส่รหัส 4842 ก่อน ถึงจะแก้ไขจุดแจ้งเตือนขั้นต่ำและลบข้อมูลได้</p><div class="row2"><div><label>รหัสหลังบ้าน</label><input id="adminPass" type="password" placeholder="ใส่รหัส"></div><div><label>ผู้รับผิดชอบ</label><input id="settingPerson" placeholder="ชื่อผู้แก้ไข"></div></div><div class="actions" style="margin-top:10px"><button class="btn" onclick="unlockAdmin()">ปลดล็อก</button><button class="btn gray" onclick="lockAdmin()">ล็อก</button></div><div id="adminStatus" class="small" style="margin-top:8px">สถานะ: ยังไม่ปลดล็อก</div></div><div class="card"><h2>ตั้งค่าขั้นต่ำสินค้า</h2><div class="table-wrap"><table><thead><tr><th>สินค้า</th><th>หมวด</th><th>คงเหลือ</th><th>ขั้นต่ำ</th><th>แก้ไข</th></tr></thead><tbody id="settingStockTable"></tbody></table></div></div><div class="card"><h2>สำรองข้อมูล</h2><div class="actions"><button class="btn green" onclick="backupJSON()">Backup JSON</button><label class="btn light">นำเข้า JSON<input type="file" accept="application/json" onchange="restoreJSON(event)" class="hidden"></label><button class="btn red" onclick="clearAll()">ล้างข้อมูลทั้งหมด</button></div></div></section>
+</main>
 <script>
-const KEY='stockFermentationManagerPRO_v1';
-let db=JSON.parse(localStorage.getItem(KEY)||'{"items":[],"movements":[],"ferments":[],"notes":[],"itemNames":["ขวด 270ml","ฝาขวด","ซีนแดง","ซีนทอง","ฉลากอินทผลัม","ฉลากพีช","ฉลากเสาวรส","ฉลากองุ่น","ฉลากสตอเบอรี่","หลังอินทผลัม","หลังสับปะรด","อินทผลัม","สับปะรด","ยีสต์","น้ำตาล","พีช","เสาวรส","องุ่น","สตอเบอรี่"],"fermentTypes":["อินทผลัม","สับปะรด"]}');
-const DEFAULT_ITEMS=["ขวด 270ml","ฝาขวด","ซีนแดง","ซีนทอง","ฉลากอินทผลัม","ฉลากพีช","ฉลากเสาวรส","ฉลากองุ่น","ฉลากสตอเบอรี่","หลังอินทผลัม","หลังสับปะรด","อินทผลัม","สับปะรด","ยีสต์","น้ำตาล","พีช","เสาวรส","องุ่น","สตอเบอรี่"];
-if(!db.itemNames)db.itemNames=[...DEFAULT_ITEMS];
-db.itemNames=[...new Set(db.itemNames.filter(x=>!['CO₂','CO2','แอลกอฮอล์ 95%','แอล95%','แอล 95%'].includes(x)).concat(DEFAULT_ITEMS))];
-if(!db.fermentTypes)db.fermentTypes=["อินทผลัม","สับปะรด"];
-const save=()=>localStorage.setItem(KEY,JSON.stringify(db));
-const money=n=>'฿'+Number(n||0).toLocaleString('th-TH',{maximumFractionDigits:2});
-const fmtDate=v=>v?new Date(v).toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'}):'-';
-const num=v=>Number(v||0);
-function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+const KEY='stockFermentationManagerPRO_v2';
+const DEFAULT_ITEMS=['ขวด 270ml','ฝาขวด','ซีนแดง','ซีนทอง','ฉลากอินทผลัม','ฉลากพีช','ฉลากเสาวรส','ฉลากองุ่น','ฉลากสตอเบอรี่','หลังอินทผลัม','หลังสับปะรด','อินทผลัม','สับปะรด','ยีสต์','น้ำตาล'];
+const DRINK_ITEMS=['อินทผลัม','พีช','เสาวรส','องุ่น','สตอเบอรี่'];
+let db=JSON.parse(localStorage.getItem(KEY)||'{"items":[],"movements":[],"ferments":[],"notes":[],"itemNames":[],"drinkNames":[],"fermentTypes":["อินทผลัม","สับปะรด"]}');
+let adminUnlocked=false;db.itemNames=[...new Set((db.itemNames||[]).filter(x=>!['CO₂','CO2','แอลกอฮอล์ 95%','แอล95%','แอล 95%','พีช','เสาวรส','องุ่น','สตอเบอรี่'].includes(x)).concat(DEFAULT_ITEMS))];db.drinkNames=DRINK_ITEMS;if(!db.fermentTypes)db.fermentTypes=['อินทผลัม','สับปะรด'];
+const save=()=>localStorage.setItem(KEY,JSON.stringify(db));const num=v=>Number(v||0);const fmtDate=v=>v?new Date(v).toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'}):'-';function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
 function showPage(id,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderAll()}
-function statusBadge(item){if(num(item.qty)<=0)return '<span class="badge bad">หมด</span>';if(num(item.qty)<=num(item.min))return '<span class="badge warn">ใกล้หมด</span>';return '<span class="badge ok">ปกติ</span>'}
-function autoCategory(name){
-  if(['ขวด 270ml','ฝาขวด','ซีนแดง','ซีนทอง'].includes(name))return 'บรรจุภัณฑ์';
-  if(String(name).includes('ฉลาก')||String(name).startsWith('หลัง'))return 'ฉลาก';
-  if(['อินทผลัม','สับปะรด','ยีสต์','น้ำตาล'].includes(name))return 'วัตถุดิบ';
-  if(['พีช','เสาวรส','องุ่น','สตอเบอรี่'].includes(name))return 'ไซรัป';
-  return 'วัตถุดิบ';
-}
-function syncCategory(){itemCat.value=autoCategory(itemName.value)}
-function quickStockMove(id,type){
-  let item=db.items.find(x=>x.id===id); if(!item)return;
-  let txt=type==='in'?'รับเข้า':'เบิกออก';
-  let q=num(prompt(txt+' จำนวนเท่าไหร่?'));
-  if(!q)return;
-  if(type==='out'&&item.qty<q&&!confirm('จำนวนเบิกมากกว่าสต็อก ต้องการบันทึกต่อไหม?'))return;
-  item.qty += type==='in'?q:-q;
-  db.movements.unshift({id:uid(),date:new Date().toISOString(),type,itemId:id,itemName:item.name,qty:q,unit:item.unit,ref:'คลังสินค้า',note:txt+'จากหน้าคลังสินค้า'});
-  save();renderAll();
-}
-function addItem(){let name=itemName.value.trim();if(!name)return alert('กรุณาเลือกชื่อสินค้า');db.items.push({id:uid(),name,cat:itemCat.value.trim(),unit:itemUnit.value.trim(),qty:num(itemQty.value),price:num(itemPrice.value),min:num(itemMin.value),created:new Date().toISOString()});save();['itemCat','itemUnit'].forEach(id=>document.getElementById(id).value='');itemQty.value=0;itemPrice.value=0;itemMin.value=0;renderAll()}
-function delItem(id){if(confirm('ลบสินค้านี้?')){db.items=db.items.filter(x=>x.id!==id);save();renderAll()}}
-function renderOptions(){itemName.innerHTML=db.itemNames.map(x=>`<option value="${x}">${x}</option>`).join('');itemName.onchange=syncCategory;syncCategory();fType.innerHTML=db.fermentTypes.map(x=>`<option value="${x}">${x}</option>`).join('');itemOptionList.innerHTML=db.itemNames.map(x=>`<div class="actions" style="margin-bottom:6px"><span class="badge info" style="align-self:center">${x}</span><button class="btn red" onclick="removeOption('itemNames','${x}')">ลบ</button></div>`).join('')||'<div class="small">ยังไม่มีรายการ</div>';fermentOptionList.innerHTML=db.fermentTypes.map(x=>`<div class="actions" style="margin-bottom:6px"><span class="badge info" style="align-self:center">${x}</span><button class="btn red" onclick="removeOption('fermentTypes','${x}')">ลบ</button></div>`).join('')||'<div class="small">ยังไม่มีรายการ</div>'}
-function addOption(type){let input=type==='itemNames'?newItemOption:newFermentOption;let v=input.value.trim();if(!v)return alert('กรุณากรอกข้อมูล');if(db[type].includes(v))return alert('มีรายการนี้แล้ว');db[type].push(v);input.value='';save();renderAll()}
-function removeOption(type,value){if(confirm('ลบตัวเลือกนี้?')){db[type]=db[type].filter(x=>x!==value);save();renderAll()}}
-function nextLot(){let today=new Date().toISOString().slice(0,10).replaceAll('-','');let prefix='LOT-'+today+'-';let nums=db.ferments.filter(x=>String(x.lot||'').startsWith(prefix)).map(x=>Number(String(x.lot).split('-').pop())||0);let n=(nums.length?Math.max(...nums):0)+1;return prefix+String(n).padStart(3,'0')}
-function renderStock(){renderOptions();let q=(stockSearch?.value||'').toLowerCase();stockTable.innerHTML=db.items.filter(x=>(x.name+x.cat).toLowerCase().includes(q)).map(x=>`<tr><td><b>${x.name}</b><div class="small">หน่วย: ${x.unit||'-'}</div></td><td>${x.cat||'-'}</td><td>${num(x.qty).toLocaleString()} ${x.unit||''}</td><td>${money(x.price)}</td><td>${money(num(x.qty)*num(x.price))}</td><td>${statusBadge(x)}</td><td><div class="actions"><button class="btn green" onclick="quickStockMove('${x.id}','in')">รับเข้า</button><button class="btn yellow" onclick="quickStockMove('${x.id}','out')">เบิกออก</button><button class="btn red" onclick="delItem('${x.id}')">ลบ</button></div></td></tr>`).join('')||'<tr><td colspan="7" class="small">ยังไม่มีสินค้า</td></tr>';
-moveItem.innerHTML=db.items.map(x=>`<option value="${x.id}">${x.name} (${x.qty} ${x.unit||''})</option>`).join('')}
-function addMovement(){let id=moveItem.value, item=db.items.find(x=>x.id===id), q=num(moveQty.value);if(!item||!q)return alert('กรุณาเลือกสินค้าและจำนวน');if(moveType.value==='out'&&item.qty<q&&!confirm('จำนวนเบิกมากกว่าสต็อก ต้องการบันทึกต่อไหม?'))return;item.qty += moveType.value==='in'?q:-q;db.movements.unshift({id:uid(),date:new Date().toISOString(),type:moveType.value,itemId:id,itemName:item.name,qty:q,unit:item.unit,ref:moveRef.value,note:moveNote.value});save();moveQty.value='';moveRef.value='';moveNote.value='';renderAll()}
-function delMove(id){if(confirm('ลบรายการนี้? หมายเหตุ: จะไม่ย้อนสต็อกให้อัตโนมัติ')){db.movements=db.movements.filter(x=>x.id!==id);save();renderAll()}}
-function renderMoves(){moveTable.innerHTML=db.movements.map(x=>`<tr><td>${fmtDate(x.date)}</td><td>${x.type==='in'?'<span class="badge ok">รับเข้า</span>':'<span class="badge bad">เบิกออก</span>'}</td><td>${x.itemName}</td><td>${x.qty} ${x.unit||''}</td><td>${x.ref||'-'}</td><td>${x.note||'-'}</td><td><button class="btn red" onclick="delMove('${x.id}')">ลบ</button></td></tr>`).join('')||'<tr><td colspan="7" class="small">ยังไม่มีประวัติ</td></tr>'}
-function calcFerment(start,end,b1,b2,ph1,ph2){let days='-';if(start&&end){days=((new Date(end)-new Date(start))/(1000*60*60*24));days=isFinite(days)?Math.max(0,days):'-'}let drop=num(b1)-num(b2);let abv=Math.max(0,drop*0.59);return{days,drop,abv,phChange:num(ph2)-num(ph1)}}
-function previewFermentCalc(){let c=calcFerment(fStart.value,fEnd.value,fBrixBefore.value,fBrixAfter.value,fPhBefore.value,fPhAfter.value);calcPreview.innerHTML=`Brix ลดลง: <b>${c.drop.toFixed(2)}</b> | ABV โดยประมาณ: <b>${c.abv.toFixed(2)}%</b> | วันหมัก: <b>${c.days==='-'?'-':c.days.toFixed(1)+' วัน'}</b> | pH เปลี่ยน: <b>${c.phChange.toFixed(2)}</b>`}
-function saveFerment(){if(!fLot.value.trim())fLot.value=nextLot();let c=calcFerment(fStart.value,fEnd.value,fBrixBefore.value,fBrixAfter.value,fPhBefore.value,fPhAfter.value);db.ferments.unshift({id:uid(),lot:fLot.value.trim(),type:fType.value.trim(),status:fStatus.value,start:fStart.value,end:fEnd.value,brixBefore:num(fBrixBefore.value),phBefore:num(fPhBefore.value),brixAfter:num(fBrixAfter.value),phAfter:num(fPhAfter.value),temp:fTemp.value,extra:fExtra.value,note:fNote.value,days:c.days,drop:c.drop,abv:c.abv,created:new Date().toISOString()});save();['fLot','fStart','fEnd','fBrixBefore','fPhBefore','fBrixAfter','fPhAfter','fTemp','fExtra','fNote'].forEach(id=>document.getElementById(id).value='');calcPreview.innerHTML='';renderAll()}
-function delFerment(id){if(confirm('ลบบันทึกการหมักนี้?')){db.ferments=db.ferments.filter(x=>x.id!==id);save();renderAll()}}
-function renderFerments(){fermentTable.innerHTML=db.ferments.map(x=>`<tr><td><b>${x.lot}</b><div class="small">${x.note||''}</div></td><td>${x.type||'-'}</td><td>${fmtDate(x.start)}</td><td>${fmtDate(x.end)}</td><td>${x.brixBefore} → ${x.brixAfter}<div class="small">ลด ${Number(x.drop||0).toFixed(2)}</div></td><td>${x.phBefore} → ${x.phAfter}</td><td>${x.days==='-'?'-':Number(x.days).toFixed(1)}</td><td><b>${Number(x.abv||0).toFixed(2)}%</b></td><td>${x.status==='หมักเสร็จ'?'<span class="badge ok">หมักเสร็จ</span>':x.status==='ต้องตรวจสอบ'?'<span class="badge bad">ต้องตรวจสอบ</span>':'<span class="badge info">กำลังหมัก</span>'}</td><td><button class="btn red" onclick="delFerment('${x.id}')">ลบ</button></td></tr>`).join('')||'<tr><td colspan="10" class="small">ยังไม่มีบันทึกการหมัก</td></tr>'}
-function addNote(){if(!noteTitle.value.trim())return alert('กรุณากรอกหัวข้อ');db.notes.unshift({id:uid(),date:new Date().toISOString(),title:noteTitle.value,cat:noteCat.value,text:noteText.value});save();noteTitle.value='';noteCat.value='';noteText.value='';renderAll()}
-function delNote(id){if(confirm('ลบโน้ตนี้?')){db.notes=db.notes.filter(x=>x.id!==id);save();renderAll()}}
-function renderNotes(){noteList.innerHTML=db.notes.map(x=>`<div class="card" style="margin-bottom:8px;box-shadow:none"><b>${x.title}</b> <span class="badge info">${x.cat||'ทั่วไป'}</span><div class="small">${fmtDate(x.date)}</div><p style="white-space:pre-wrap">${x.text||''}</p><button class="btn red" onclick="delNote('${x.id}')">ลบ</button></div>`).join('')||'<div class="small">ยังไม่มีบันทึก</div>'}
-function renderDashboard(){let value=db.items.reduce((s,x)=>s+num(x.qty)*num(x.price),0), low=db.items.filter(x=>num(x.qty)<=num(x.min));dashItems.textContent=db.items.length;dashValue.textContent=money(value);dashLow.textContent=low.length;dashFermenting.textContent=db.ferments.filter(x=>x.status==='กำลังหมัก').length;lowStockList.innerHTML=low.slice(0,8).map(x=>`<div>⚠️ <b>${x.name}</b> เหลือ ${x.qty} ${x.unit||''} / ขั้นต่ำ ${x.min}</div>`).join('')||'ไม่มีสินค้าใกล้หมด';recentFerments.innerHTML=db.ferments.slice(0,6).map(x=>`<div>🧪 <b>${x.lot}</b> ${x.type||''} | ABV ${Number(x.abv||0).toFixed(2)}% | ${x.status}</div>`).join('')||'ยังไม่มีข้อมูล'}
-function renderReports(){let avg=db.ferments.length?db.ferments.reduce((s,x)=>s+num(x.abv),0)/db.ferments.length:0;reportSummary.innerHTML=`สินค้า ${db.items.length} รายการ<br>ประวัติรับเข้า/เบิกออก ${db.movements.length} รายการ<br>บันทึกการหมัก ${db.ferments.length} ล็อต<br>ABV เฉลี่ย ${avg.toFixed(2)}%`}
-function renderAll(){renderStock();renderMoves();renderFerments();renderNotes();renderDashboard();renderReports()}
-function toCSV(rows){if(!rows.length)return '';let keys=Object.keys(rows[0]);let esc=v=>'"'+String(v??'').replaceAll('"','""')+'"';return '\ufeff'+[keys.join(','),...rows.map(r=>keys.map(k=>esc(r[k])).join(','))].join('\n')}
-function download(name,content,type='text/csv'){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click();URL.revokeObjectURL(a.href)}
-function exportCSV(type){download(type+'_'+new Date().toISOString().slice(0,10)+'.csv',toCSV(db[type]||[]))}
-function backupJSON(){download('backup_stock_fermentation_'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(db,null,2),'application/json')}
-function restoreJSON(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{db=JSON.parse(r.result);save();renderAll();alert('นำเข้าข้อมูลสำเร็จ')}catch(err){alert('ไฟล์ไม่ถูกต้อง')}};r.readAsText(f)}
-function clearAll(){if(confirm('ต้องการล้างข้อมูลทั้งหมดจริงไหม?')){db={items:[],movements:[],ferments:[],notes:[]};save();renderAll()}}
-renderAll();
+function autoCategory(name){if(['ขวด 270ml','ฝาขวด','ซีนแดง','ซีนทอง'].includes(name))return 'บรรจุภัณฑ์';if(String(name).includes('ฉลาก')||String(name).startsWith('หลัง'))return 'ฉลาก';return 'วัตถุดิบ'}
+function autoUnit(name){if(String(name).includes('ขวด')||String(name).includes('ฝา')||String(name).includes('ซีน')||String(name).includes('ฉลาก')||String(name).startsWith('หลัง'))return 'ชิ้น';if(['อินทผลัม','สับปะรด','น้ำตาล'].includes(name))return 'กก.';if(name==='ยีสต์')return 'กรัม';return 'ชิ้น'}
+function syncCategory(){itemCat.value=autoCategory(itemName.value);itemUnit.value=autoUnit(itemName.value)}
+function statusBadge(x){if(num(x.qty)<=0)return '<span class="badge bad">หมด</span>';if(num(x.qty)<=num(x.min))return '<span class="badge warn">ใกล้หมด</span>';return '<span class="badge ok">ปกติ</span>'}
+function requireAdmin(){if(adminUnlocked)return true;let p=prompt('ต้องใส่รหัสหลังบ้านก่อน');if(p==='4842'){adminUnlocked=true;adminStatus.innerHTML='สถานะ: <b style="color:green">ปลดล็อกแล้ว</b>';renderAll();return true}alert('รหัสไม่ถูกต้อง');return false}function unlockAdmin(){if(adminPass.value==='4842'){adminUnlocked=true;adminStatus.innerHTML='สถานะ: <b style="color:green">ปลดล็อกแล้ว</b>';renderAll()}else alert('รหัสไม่ถูกต้อง')}function lockAdmin(){adminUnlocked=false;adminPass.value='';adminStatus.innerHTML='สถานะ: ยังไม่ปลดล็อก';renderAll()}
+function renderOptions(){itemName.innerHTML=db.itemNames.map(x=>`<option>${x}</option>`).join('');moveItem.innerHTML=DRINK_ITEMS.map(x=>`<option>${x}</option>`).join('');fType.innerHTML=db.fermentTypes.map(x=>`<option>${x}</option>`).join('');syncCategory()}
+function addItem(){let name=itemName.value;if(!name)return alert('กรุณาเลือกสินค้า');db.items.push({id:uid(),name,cat:autoCategory(name),unit:autoUnit(name),qty:num(itemQty.value),min:0,person:itemPerson.value.trim(),created:new Date().toISOString()});save();itemQty.value=0;itemPerson.value='';renderAll()}
+function delItem(id){if(!requireAdmin())return;if(confirm('ลบสินค้านี้?')){db.items=db.items.filter(x=>x.id!==id);save();renderAll()}}
+function quickStockMove(id,type){let item=db.items.find(x=>x.id===id);if(!item)return;let q=num(prompt((type==='in'?'รับเข้า':'เบิกออก')+' จำนวนเท่าไหร่?'));if(!q)return;if(type==='out'&&item.qty<q&&!confirm('จำนวนเบิกมากกว่าสต็อก ต้องการบันทึกต่อไหม?'))return;item.qty+=type==='in'?q:-q;db.movements.unshift({id:uid(),date:new Date().toISOString(),type,itemId:id,itemName:item.name,qty:q,unit:item.unit,person:'-',ref:'คลังสินค้า',note:'ทำรายการจากหน้าคลัง'});save();renderAll()}
+function renderStock(){let q=(stockSearch?.value||'').toLowerCase();stockTable.innerHTML=db.items.filter(x=>(x.name+x.cat).toLowerCase().includes(q)).map(x=>`<tr><td><b>${x.name}</b><div class="small">หน่วย: ${x.unit}</div></td><td>${x.cat}</td><td>${x.qty} ${x.unit}</td><td>${x.min||0}</td><td>${statusBadge(x)}</td><td>${x.person||'-'}</td><td><div class="actions"><button class="btn green" onclick="quickStockMove('${x.id}','in')">รับเข้า</button><button class="btn yellow" onclick="quickStockMove('${x.id}','out')">เบิกออก</button><button class="btn red" onclick="delItem('${x.id}')">ลบ</button></div></td></tr>`).join('')||'<tr><td colspan="7" class="small">ยังไม่มีสินค้า</td></tr>'}
+function addMovement(){let name=moveItem.value,q=num(moveQty.value);if(!q)return alert('กรุณากรอกจำนวน');let item=db.items.find(x=>x.name==='พร้อมขาย '+name);if(!item){item={id:uid(),name:'พร้อมขาย '+name,cat:'เครื่องดื่มพร้อมจำหน่าย',unit:'ขวด',qty:0,min:0,person:movePerson.value.trim(),created:new Date().toISOString()};db.items.push(item)}if(moveType.value==='out'&&item.qty<q&&!confirm('จำนวนเบิกมากกว่าสต็อก ต้องการบันทึกต่อไหม?'))return;item.qty+=moveType.value==='in'?q:-q;db.movements.unshift({id:uid(),date:new Date().toISOString(),type:moveType.value,itemId:item.id,itemName:item.name,qty:q,unit:'ขวด',person:movePerson.value.trim(),ref:moveRef.value,note:moveNote.value});save();moveQty.value='';movePerson.value='';moveRef.value='';moveNote.value='';renderAll()}
+function delMove(id){if(!requireAdmin())return;if(confirm('ลบรายการนี้?')){db.movements=db.movements.filter(x=>x.id!==id);save();renderAll()}}function renderMoves(){moveTable.innerHTML=db.movements.map(x=>`<tr><td>${fmtDate(x.date)}</td><td>${x.type==='in'?'<span class="badge ok">รับเข้า</span>':'<span class="badge bad">เบิกออก</span>'}</td><td>${x.itemName}</td><td>${x.qty} ${x.unit}</td><td>${x.person||'-'}</td><td>${x.ref||'-'}</td><td>${x.note||'-'}</td><td><button class="btn red" onclick="delMove('${x.id}')">ลบ</button></td></tr>`).join('')||'<tr><td colspan="8" class="small">ยังไม่มีประวัติ</td></tr>'}
+function nextLot(){return 'LOT-'+new Date().toISOString().slice(0,10).replaceAll('-','')+'-'+String(db.ferments.length+1).padStart(3,'0')}function calcFerment(start,end,b1,b2,ph1,ph2){let days='-';if(start&&end){days=(new Date(end)-new Date(start))/(86400000);if(!isFinite(days))days='-'}let drop=num(b1)-num(b2),abv=Math.max(0,drop*0.59);return{days,drop,abv,phChange:num(ph2)-num(ph1)}}function previewFermentCalc(){let c=calcFerment(fStart.value,fEnd.value,fBrixBefore.value,fBrixAfter.value,fPhBefore.value,fPhAfter.value);calcPreview.innerHTML=`Brix ลดลง: <b>${c.drop.toFixed(2)}</b> | ABV ประมาณ: <b>${c.abv.toFixed(2)}%</b> | วันหมัก: <b>${c.days==='-'?'-':c.days.toFixed(1)+' วัน'}</b> | pH เปลี่ยน: <b>${c.phChange.toFixed(2)}</b>`}
+function saveFerment(){if(!fLot.value.trim())fLot.value=nextLot();let c=calcFerment(fStart.value,fEnd.value,fBrixBefore.value,fBrixAfter.value,fPhBefore.value,fPhAfter.value);db.ferments.unshift({id:uid(),lot:fLot.value.trim(),type:fType.value,status:fStatus.value,person:fPerson.value.trim(),start:fStart.value,end:fEnd.value,brixBefore:num(fBrixBefore.value),phBefore:num(fPhBefore.value),brixAfter:num(fBrixAfter.value),phAfter:num(fPhAfter.value),temp:fTemp.value,extra:fExtra.value,note:fNote.value,days:c.days,drop:c.drop,abv:c.abv,created:new Date().toISOString()});save();['fLot','fPerson','fStart','fEnd','fBrixBefore','fPhBefore','fBrixAfter','fPhAfter','fTemp','fExtra','fNote'].forEach(id=>document.getElementById(id).value='');calcPreview.innerHTML='';renderAll()}
+function delFerment(id){if(!requireAdmin())return;if(confirm('ลบบันทึกการหมักนี้?')){db.ferments=db.ferments.filter(x=>x.id!==id);save();renderAll()}}function renderFerments(){fermentTable.innerHTML=db.ferments.map(x=>`<tr><td><b>${x.lot}</b></td><td>${x.type}</td><td>${x.person||'-'}</td><td>${fmtDate(x.start)}</td><td>${fmtDate(x.end)}</td><td>${x.brixBefore} → ${x.brixAfter}<div class="small">ลด ${Number(x.drop||0).toFixed(2)}</div></td><td>${x.phBefore} → ${x.phAfter}</td><td>${x.days==='-'?'-':Number(x.days).toFixed(1)}</td><td><b>${Number(x.abv||0).toFixed(2)}%</b></td><td>${x.status==='หมักเสร็จ'?'<span class="badge ok">หมักเสร็จ</span>':x.status==='ต้องตรวจสอบ'?'<span class="badge bad">ต้องตรวจสอบ</span>':'<span class="badge info">กำลังหมัก</span>'}</td><td><button class="btn red" onclick="delFerment('${x.id}')">ลบ</button></td></tr>`).join('')||'<tr><td colspan="11" class="small">ยังไม่มีข้อมูล</td></tr>'}
+function addNote(){if(!noteTitle.value.trim())return alert('กรุณากรอกหัวข้อ');db.notes.unshift({id:uid(),date:new Date().toISOString(),title:noteTitle.value,cat:noteCat.value,person:notePerson.value,text:noteText.value});save();noteTitle.value='';noteCat.value='';notePerson.value='';noteText.value='';renderAll()}function delNote(id){if(!requireAdmin())return;if(confirm('ลบโน้ตนี้?')){db.notes=db.notes.filter(x=>x.id!==id);save();renderAll()}}function renderNotes(){noteList.innerHTML=db.notes.map(x=>`<div class="card" style="box-shadow:none"><b>${x.title}</b> <span class="badge info">${x.cat||'ทั่วไป'}</span><div class="small">${fmtDate(x.date)} | ผู้รับผิดชอบ: ${x.person||'-'}</div><p style="white-space:pre-wrap">${x.text||''}</p><button class="btn red" onclick="delNote('${x.id}')">ลบ</button></div>`).join('')||'<div class="small">ยังไม่มีบันทึก</div>'}
+function renderDashboard(){let low=db.items.filter(x=>num(x.qty)<=num(x.min)),drinks=db.items.filter(x=>String(x.name).startsWith('พร้อมขาย ')).reduce((s,x)=>s+num(x.qty),0);dashItems.textContent=db.items.length;dashDrinks.textContent=drinks;dashLow.textContent=low.length;dashFermenting.textContent=db.ferments.filter(x=>x.status==='กำลังหมัก').length;lowStockList.innerHTML=low.slice(0,8).map(x=>`⚠️ <b>${x.name}</b> เหลือ ${x.qty} ${x.unit} / ขั้นต่ำ ${x.min}<br>`).join('')||'ไม่มีสินค้าใกล้หมด';recentFerments.innerHTML=db.ferments.slice(0,6).map(x=>`🧪 <b>${x.lot}</b> ${x.type} | ABV ${Number(x.abv||0).toFixed(2)}% | ${x.status}<br>`).join('')||'ยังไม่มีข้อมูล'}
+function renderReports(){let avg=db.ferments.length?db.ferments.reduce((s,x)=>s+num(x.abv),0)/db.ferments.length:0;reportSummary.innerHTML=`สินค้าในคลัง ${db.items.length} รายการ<br>ประวัติรับ/เบิก ${db.movements.length} รายการ<br>บันทึกการหมัก ${db.ferments.length} ล็อต<br>ABV เฉลี่ย ${avg.toFixed(2)}%`}
+function renderSettings(){settingStockTable.innerHTML=db.items.map(x=>`<tr><td>${x.name}</td><td>${x.cat}</td><td>${x.qty} ${x.unit}</td><td><input id="min_${x.id}" type="number" step="0.01" value="${x.min||0}" ${adminUnlocked?'':'disabled'}></td><td><button class="btn" onclick="saveMin('${x.id}')" ${adminUnlocked?'':'disabled'}>บันทึก</button></td></tr>`).join('')||'<tr><td colspan="5" class="small">ยังไม่มีสินค้า</td></tr>'}function saveMin(id){if(!requireAdmin())return;let item=db.items.find(x=>x.id===id);item.min=num(document.getElementById('min_'+id).value);item.minUpdatedBy=settingPerson.value;item.minUpdatedAt=new Date().toISOString();save();renderAll()}
+function toCSV(rows){if(!rows.length)return '';let keys=Object.keys(rows[0]);let esc=v=>'"'+String(v??'').replaceAll('"','""')+'"';return '﻿'+[keys.join(','),...rows.map(r=>keys.map(k=>esc(r[k])).join(','))].join('
+')}function download(name,content,type='text/csv'){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click();URL.revokeObjectURL(a.href)}function exportCSV(type){download(type+'_'+new Date().toISOString().slice(0,10)+'.csv',toCSV(db[type]||[]))}function backupJSON(){download('backup_stock_'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(db,null,2),'application/json')}function restoreJSON(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{db=JSON.parse(r.result);save();renderAll();alert('นำเข้าสำเร็จ')}catch(err){alert('ไฟล์ไม่ถูกต้อง')}};r.readAsText(f)}function clearAll(){if(!requireAdmin())return;if(confirm('ต้องการล้างข้อมูลทั้งหมดจริงไหม?')){db={items:[],movements:[],ferments:[],notes:[],itemNames:[...DEFAULT_ITEMS],drinkNames:[...DRINK_ITEMS],fermentTypes:['อินทผลัม','สับปะรด']};save();renderAll()}}
+function renderAll(){renderOptions();renderStock();renderMoves();renderFerments();renderNotes();renderDashboard();renderReports();renderSettings()}renderAll();
 </script>
 </body>
 </html>
