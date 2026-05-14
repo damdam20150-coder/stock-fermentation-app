@@ -9,6 +9,8 @@
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
     body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text);padding-bottom:78px}
     header{background:linear-gradient(135deg,#0f172a,#2563eb);color:white;padding:16px 14px;position:sticky;top:0;z-index:5}
+    .auth-screen{position:fixed;inset:0;background:linear-gradient(135deg,#0f172a,#2563eb);z-index:99;display:flex;align-items:center;justify-content:center;padding:14px;overflow:auto}
+    .auth-screen.hidden{display:none}.auth-card{background:white;border-radius:22px;padding:18px;max-width:440px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.25)}.auth-card h1{font-size:22px;margin:0 0 6px}.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.auth-tabs button{border:0;border-radius:12px;padding:12px;font-weight:900;background:#eef2ff;color:#1e3a8a}.auth-tabs button.active{background:var(--primary);color:white}
     header h1{font-size:18px;margin:0}
     nav{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:7px;background:white;border-top:1px solid var(--line);position:fixed;left:0;right:0;bottom:0;z-index:20;box-shadow:0 -6px 18px rgba(15,23,42,.12)}
     nav button{border:0;background:white;color:#475467;padding:8px 3px;border-radius:12px;font-weight:900;font-size:11px;line-height:1.15;min-height:48px}
@@ -29,6 +31,32 @@
   </style>
 </head>
 <body>
+  <div id="authScreen" class="auth-screen">
+    <div class="auth-card">
+      <h1>Stock Manager Login</h1>
+      <p class="small">เข้าสู่ระบบเพื่อซิงก์ข้อมูลออนไลน์หลายเครื่อง</p>
+      <div class="auth-tabs">
+        <button id="loginTab" class="active" onclick="switchAuthMode('login')">เข้าสู่ระบบ</button>
+        <button id="registerTab" onclick="switchAuthMode('register')">สร้างบัญชี</button>
+      </div>
+      <label>Email</label><input id="authEmail" type="email" placeholder="เช่น staff@gmail.com">
+      <label>Password</label><input id="authPassword" type="password" placeholder="อย่างน้อย 6 ตัว">
+      <div id="registerFields">
+        <label>ชื่อผู้ใช้งาน</label><input id="authDisplayName" placeholder="เช่น พี / พนักงานขาย">
+        <label>รหัสร้าน/บริษัท</label><input id="authCompanyId" placeholder="เช่น stock-main">
+        <label>สิทธิ์ผู้ใช้</label><select id="authRole"><option value="staff">Staff</option><option value="admin">Admin</option></select>
+      </div>
+      <button id="authSubmitBtn" class="btn green" onclick="submitAuth()">เข้าสู่ระบบ</button>
+      <button class="btn light" onclick="enterOfflineMode()" style="margin-top:8px">เข้าใช้งานแบบออฟไลน์</button>
+      <div id="authStatus" class="small" style="margin-top:10px"></div>
+      <details style="margin-top:12px">
+        <summary class="small">ตั้งค่า Firebase Config</summary>
+        <p class="small">วาง firebaseConfig แล้วกดบันทึก 1 ครั้ง เครื่องนี้จะจำไว้</p>
+        <textarea id="authFirebaseConfigText" placeholder="const firebaseConfig = { ... };"></textarea>
+        <button class="btn" onclick="saveFirebaseConfigFromAuth()" style="margin-top:8px">บันทึก Firebase Config</button>
+      </details>
+    </div>
+  </div>
   <header><h1>Stock & Fermentation Manager PRO</h1></header>
   <nav>
     <button class="active" onclick="showPage('dashboard',this)">หน้าแรก</button>
@@ -106,12 +134,12 @@
         <div class="row2"><div><label>ผู้รับผิดชอบ</label><input id="fPerson" placeholder="ชื่อผู้รับผิดชอบ" /></div><div><label>อุณหภูมิเริ่มต้น °C</label><input id="fTemp" type="number" step="0.1" /></div></div>
         <div class="row2"><div><label>วัน/เวลา ที่เริ่มหมัก</label><input id="fStart" type="datetime-local" /></div><div><label>วัน/เวลา ที่หมักเสร็จ</label><input id="fEnd" type="datetime-local" /></div></div>
         <div class="row"><div><label>Brix ก่อนหมัก</label><input id="fBrixBefore" type="number" step="0.01" /></div><div><label>pH ก่อนหมัก</label><input id="fPhBefore" type="number" step="0.01" /></div><div><label>หมายเหตุเพิ่มเติม</label><input id="fExtra" placeholder="เช่น กลิ่น สี หรือรสชาติ" /></div></div>
-        <div class="row2"><div><label>Brix หลังหมัก</label><input id="fBrixAfter" type="number" step="0.01" /></div><div><label>pH หลังหมัก</label><input id="fPhAfter" type="number" step="0.01" /></div></div>
+        <div class="row2"><div><label>Brix หลังหมัก (กรอกทีหลังได้)</label><input id="fBrixAfter" type="number" step="0.01" placeholder="ยังไม่ต้องกรอกตอนเริ่มหมักก็ได้" /></div><div><label>pH หลังหมัก (กรอกทีหลังได้)</label><input id="fPhAfter" type="number" step="0.01" placeholder="ยังไม่ต้องกรอกตอนเริ่มหมักก็ได้" /></div></div>
         <label>หมายเหตุ</label><textarea id="fNote"></textarea>
         <div class="actions" style="margin-top:10px"><button class="btn" onclick="saveFerment()">บันทึกการหมัก</button><button class="btn light" onclick="previewFermentCalc()">คำนวณดูก่อน</button></div>
         <div id="calcPreview" class="small" style="margin-top:10px"></div>
       </div>
-      <div class="card"><h2>ประวัติการหมัก</h2><div class="table-wrap"><table><thead><tr><th>ล็อต</th><th>ประเภท</th><th>ผู้รับผิดชอบ</th><th>เริ่ม</th><th>เสร็จ</th><th>Brix</th><th>pH</th><th>วัน</th><th>ABV</th><th>สถานะ</th><th>เปลี่ยนสถานะ</th><th></th></tr></thead><tbody id="fermentTable"></tbody></table></div></div>
+      <div class="card"><h2>ประวัติการหมัก</h2><div class="table-wrap"><table><thead><tr><th>ล็อต</th><th>ประเภท</th><th>ผู้รับผิดชอบ</th><th>เริ่ม</th><th>เสร็จ</th><th>Brix</th><th>pH</th><th>วัน</th><th>ABV</th><th>สถานะ</th><th>เปลี่ยนสถานะ</th><th>ผลหมัก</th><th></th></tr></thead><tbody id="fermentTable"></tbody></table></div></div>
     </section>
 
     <section id="notes" class="page">
@@ -161,8 +189,35 @@
     let cloudSaveTimer = null;
     let cloudReady = false;
     let applyingCloudData = false;
+    let authMode = 'login';
 
     function $(id){ return document.getElementById(id); }
+    function switchAuthMode(mode){
+      authMode = mode;
+      $('loginTab').classList.toggle('active', mode === 'login');
+      $('registerTab').classList.toggle('active', mode === 'register');
+      $('registerFields').style.display = mode === 'register' ? 'block' : 'none';
+      $('authSubmitBtn').textContent = mode === 'register' ? 'สร้างบัญชี' : 'เข้าสู่ระบบ';
+      $('authStatus').textContent = '';
+    }
+    function showAuthScreen(show){ $('authScreen').classList.toggle('hidden', !show); }
+    function enterOfflineMode(){ showAuthScreen(false); renderAll(); }
+    function saveFirebaseConfigFromAuth(){
+      if ($('firebaseConfigText')) $('firebaseConfigText').value = $('authFirebaseConfigText').value;
+      saveFirebaseConfig();
+      $('authStatus').textContent = 'บันทึก Firebase Config แล้ว';
+    }
+    function submitAuth(){
+      if (authMode === 'register') return cloudSignUpFromAuth();
+      return cloudLoginFromAuth();
+    }
+    function syncAuthFormToCloudForm(){
+      if ($('cloudEmail')) $('cloudEmail').value = $('authEmail').value;
+      if ($('cloudPassword')) $('cloudPassword').value = $('authPassword').value;
+      if ($('cloudDisplayName')) $('cloudDisplayName').value = $('authDisplayName').value;
+      if ($('cloudCompanyId')) $('cloudCompanyId').value = $('authCompanyId').value;
+      if ($('cloudRole')) $('cloudRole').value = $('authRole').value;
+    }
     function safeParseProfile(raw){ try { return raw ? JSON.parse(raw) : {name:'',role:'staff'}; } catch(e){ return {name:'',role:'staff'}; } }
     function normalizeCompanyId(v){ return String(v || '').trim().toLowerCase().replace(/[^a-z0-9_-]/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,''); }
     function esc(text){ return String(text == null ? '' : text).replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch])); }
@@ -278,17 +333,52 @@
     function nextLot(){ return 'LOT-' + new Date().toISOString().slice(0,10).replaceAll('-','') + '-' + String(db.ferments.length + 1).padStart(3,'0'); }
     function calcFerment(start,end,b1,b2,ph1,ph2){
       let days = '-';
-      if (start && end) { days = (new Date(end) - new Date(start)) / 86400000; if (!Number.isFinite(days)) days = '-'; }
-      const drop = num(b1) - num(b2);
-      return {days,drop,abv:Math.max(0,drop*0.59),phChange:num(ph2)-num(ph1)};
+      if (start && end) {
+        days = (new Date(end) - new Date(start)) / 86400000;
+        if (!Number.isFinite(days)) days = '-';
+      }
+      const hasAfter = b2 !== '' && b2 != null;
+      const drop = hasAfter ? (num(b1) - num(b2)) : 0;
+      const abv = hasAfter ? Math.max(0, drop * 0.59) : 0;
+      const phChange = (ph2 !== '' && ph2 != null) ? (num(ph2) - num(ph1)) : 0;
+      return {days,drop,abv,phChange,hasAfter};
     }
-    function previewFermentCalc(){ const c = calcFerment($('fStart').value,$('fEnd').value,$('fBrixBefore').value,$('fBrixAfter').value,$('fPhBefore').value,$('fPhAfter').value); $('calcPreview').innerHTML = 'Brix ลดลง: <b>'+c.drop.toFixed(2)+'</b> | ABV ประมาณ: <b>'+c.abv.toFixed(2)+'%</b> | วันหมัก: <b>'+(c.days === '-' ? '-' : c.days.toFixed(1)+' วัน')+'</b> | pH เปลี่ยน: <b>'+c.phChange.toFixed(2)+'</b>'; }
+    function previewFermentCalc(){
+      const c = calcFerment($('fStart').value,$('fEnd').value,$('fBrixBefore').value,$('fBrixAfter').value,$('fPhBefore').value,$('fPhAfter').value);
+      if (!c.hasAfter) {
+        $('calcPreview').innerHTML = 'บันทึกเริ่มหมักได้เลย และค่อยมากรอกค่า Brix/pH หลังหมักภายหลัง';
+        return;
+      }
+      $('calcPreview').innerHTML = 'Brix ลดลง: <b>'+c.drop.toFixed(2)+'</b> | ABV ประมาณ: <b>'+c.abv.toFixed(2)+'%</b> | วันหมัก: <b>'+(c.days === '-' ? '-' : c.days.toFixed(1)+' วัน')+'</b> | pH เปลี่ยน: <b>'+c.phChange.toFixed(2)+'</b>';
+    }
     function updateFermentStatus(id,status){ const item = db.ferments.find(x => x.id === id); if (!item) return; item.status = status; item.statusUpdatedAt = new Date().toISOString(); save(); renderAll(); }
     function saveFerment(){
       if (!$('fLot').value.trim()) $('fLot').value = nextLot();
       const c = calcFerment($('fStart').value,$('fEnd').value,$('fBrixBefore').value,$('fBrixAfter').value,$('fPhBefore').value,$('fPhAfter').value);
-      db.ferments.unshift({id:uid(),lot:$('fLot').value.trim(),type:$('fType').value,status:$('fStatus').value,person:$('fPerson').value.trim(),start:$('fStart').value,end:$('fEnd').value,brixBefore:num($('fBrixBefore').value),phBefore:num($('fPhBefore').value),brixAfter:num($('fBrixAfter').value),phAfter:num($('fPhAfter').value),temp:$('fTemp').value,extra:$('fExtra').value,note:$('fNote').value,days:c.days,drop:c.drop,abv:c.abv,created:new Date().toISOString()});
-      save(); ['fLot','fPerson','fStart','fEnd','fBrixBefore','fPhBefore','fBrixAfter','fPhAfter','fTemp','fExtra','fNote'].forEach(id => $(id).value = ''); $('calcPreview').textContent = ''; renderAll();
+      db.ferments.unshift({id:uid(),lot:$('fLot').value.trim(),type:$('fType').value,status:c.hasAfter ? $('fStatus').value : 'กำลังหมัก',person:$('fPerson').value.trim(),start:$('fStart').value,end:$('fEnd').value,brixBefore:num($('fBrixBefore').value),phBefore:num($('fPhBefore').value),brixAfter:$('fBrixAfter').value === '' ? '' : num($('fBrixAfter').value),phAfter:$('fPhAfter').value === '' ? '' : num($('fPhAfter').value),temp:$('fTemp').value,extra:$('fExtra').value,note:$('fNote').value,days:c.days,drop:c.drop,abv:c.abv,created:new Date().toISOString()});
+      save();
+      ['fLot','fPerson','fStart','fEnd','fBrixBefore','fPhBefore','fBrixAfter','fPhAfter','fTemp','fExtra','fNote'].forEach(id => $(id).value = '');
+      $('calcPreview').textContent = '';
+      renderAll();
+    }
+
+    function updateFermentResult(id){
+      const item = db.ferments.find(x => x.id === id);
+      if (!item) return;
+      const brixAfter = prompt('กรอก Brix หลังหมัก', item.brixAfter || '');
+      if (brixAfter === null) return;
+      const phAfter = prompt('กรอก pH หลังหมัก', item.phAfter || '');
+      if (phAfter === null) return;
+      item.brixAfter = num(brixAfter);
+      item.phAfter = num(phAfter);
+      item.end = new Date().toISOString();
+      const c = calcFerment(item.start,item.end,item.brixBefore,item.brixAfter,item.phBefore,item.phAfter);
+      item.days = c.days;
+      item.drop = c.drop;
+      item.abv = c.abv;
+      item.status = 'หมักเสร็จ';
+      save();
+      renderAll();
     }
     function delFerment(id){ if (!requireAdmin()) return; if (confirm('ลบบันทึกการหมักนี้?')) { db.ferments = db.ferments.filter(x => x.id !== id); save(); renderAll(); } }
     function renderFerments(){
@@ -297,7 +387,7 @@
         const daysText = x.days === '-' ? '-' : Number(x.days).toFixed(1);
         return '<tr><td><b>'+esc(x.lot)+'</b></td><td>'+esc(x.type)+'</td><td>'+esc(x.person || '-')+'</td><td>'+fmtDate(x.start)+'</td><td>'+fmtDate(x.end)+'</td><td>'+esc(x.brixBefore)+' &rarr; '+esc(x.brixAfter)+'<div class="small">ลด '+Number(x.drop || 0).toFixed(2)+'</div></td><td>'+esc(x.phBefore)+' &rarr; '+esc(x.phAfter)+'</td><td>'+daysText+'</td><td><b>'+Number(x.abv || 0).toFixed(2)+'%</b></td><td>'+status+'</td><td><select onchange="updateFermentStatus(\''+esc(x.id)+'\',this.value)"><option value="กำลังหมัก" '+(x.status==='กำลังหมัก'?'selected':'')+'>กำลังหมัก</option><option value="หมักเสร็จ" '+(x.status==='หมักเสร็จ'?'selected':'')+'>หมักเสร็จ</option><option value="ต้องตรวจสอบ" '+(x.status==='ต้องตรวจสอบ'?'selected':'')+'>ต้องตรวจสอบ</option></select></td><td><button class="btn red" onclick="delFerment(\''+esc(x.id)+'\')">ลบ</button></td></tr>';
       }).join('');
-      $('fermentTable').innerHTML = rows || '<tr><td colspan="12" class="small">ยังไม่มีข้อมูล</td></tr>';
+      $('fermentTable').innerHTML = rows || '<tr><td colspan="13" class="small">ยังไม่มีข้อมูล</td></tr>';
     }
 
     function addNote(){ if (!$('noteTitle').value.trim()) return alert('กรุณากรอกหัวข้อ'); db.notes.unshift({id:uid(),date:new Date().toISOString(),title:$('noteTitle').value,cat:$('noteCat').value,person:$('notePerson').value,text:$('noteText').value}); save(); $('noteTitle').value=''; $('noteCat').value=''; $('notePerson').value=''; $('noteText').value=''; renderAll(); }
@@ -401,29 +491,33 @@
       localStorage.setItem(CLOUD_COMPANY_KEY, cloudCompanyId);
       localStorage.setItem(CLOUD_PROFILE_KEY, JSON.stringify(cloudProfile));
     }
-    function cloudSignUp(){
+    function cloudSignUpFromAuth(){ syncAuthFormToCloudForm(); cloudSignUp(true); }
+    function cloudLoginFromAuth(){ syncAuthFormToCloudForm(); cloudLogin(true); }
+    function cloudSignUp(fromAuth){
       if (!initFirebaseApp()) return alert('กรุณาวาง Firebase Config และกดบันทึกก่อน');
       let form;
       try { form = readCloudForm(); } catch(e) { return alert(e.message); }
       saveCloudProfile(form);
+      if (fromAuth) $('authStatus').textContent = 'กำลังสร้างบัญชี...';
       firebaseAuth.createUserWithEmailAndPassword(form.email, form.password)
         .then(cred => {
           return firebaseDb.collection('companies').doc(form.companyId).collection('members').doc(cred.user.uid).set({email:form.email,name:form.name,role:form.role,createdAt:new Date().toISOString()},{merge:true});
         })
-        .then(() => startCloudListener(form.companyId))
-        .catch(e => alert('สมัครไม่ได้: ' + e.message));
+        .then(() => { startCloudListener(form.companyId); if (fromAuth) { $('authStatus').textContent = 'สมัครสำเร็จ กำลังเข้าแอพ...'; showAuthScreen(false); } })
+        .catch(e => { if (fromAuth) $('authStatus').textContent = 'สมัครไม่ได้: ' + e.message; else alert('สมัครไม่ได้: ' + e.message); });
     }
-    function cloudLogin(){
+    function cloudLogin(fromAuth){
       if (!initFirebaseApp()) return alert('กรุณาวาง Firebase Config และกดบันทึกก่อน');
       let form;
       try { form = readCloudForm(); } catch(e) { return alert(e.message); }
       saveCloudProfile(form);
+      if (fromAuth) $('authStatus').textContent = 'กำลังเข้าสู่ระบบ...';
       firebaseAuth.signInWithEmailAndPassword(form.email, form.password)
         .then(cred => {
           return firebaseDb.collection('companies').doc(form.companyId).collection('members').doc(cred.user.uid).set({email:form.email,name:form.name,role:form.role,lastLoginAt:new Date().toISOString()},{merge:true});
         })
-        .then(() => startCloudListener(form.companyId))
-        .catch(e => alert('เข้าสู่ระบบไม่ได้: ' + e.message));
+        .then(() => { startCloudListener(form.companyId); if (fromAuth) { $('authStatus').textContent = 'เข้าสู่ระบบสำเร็จ'; showAuthScreen(false); } })
+        .catch(e => { if (fromAuth) $('authStatus').textContent = 'เข้าสู่ระบบไม่ได้: ' + e.message; else alert('เข้าสู่ระบบไม่ได้: ' + e.message); });
     }
     function cloudLogout(){
       cloudCompanyId = '';
@@ -433,6 +527,7 @@
       if (unsubscribeCloud) { unsubscribeCloud(); unsubscribeCloud = null; }
       if (firebaseAuth) firebaseAuth.signOut();
       renderCloudStatus('Cloud: ออกจากระบบแล้ว');
+      showAuthScreen(true);
     }
 
     function toCSV(rows){ if (!rows || !rows.length) return ''; const keys = Object.keys(rows[0]); const csvEscape = v => '"' + String(v == null ? '' : v).replace(/"/g,'""') + '"'; return '\uFEFF' + [keys.join(',')].concat(rows.map(r => keys.map(k => csvEscape(r[k])).join(','))).join('\n'); }
@@ -461,8 +556,13 @@
 
     function renderAll(){ renderOptions(); renderStock(); renderMoves(); renderFerments(); renderNotes(); renderDashboard(); renderReports(); renderSettings(); }
     initFirebaseApp();
+    switchAuthMode('login');
     setTimeout(function(){
       if ($('cloudCompanyId')) $('cloudCompanyId').value = cloudCompanyId || '';
+      if ($('authCompanyId')) $('authCompanyId').value = cloudCompanyId || '';
+      if ($('authDisplayName')) $('authDisplayName').value = cloudProfile.name || '';
+      if ($('authRole')) $('authRole').value = cloudProfile.role || 'staff';
+      if (getFirebaseConfig() && $('authFirebaseConfigText')) $('authFirebaseConfigText').value = JSON.stringify(getFirebaseConfig(), null, 2);
       if ($('cloudDisplayName')) $('cloudDisplayName').value = cloudProfile.name || '';
       if ($('cloudRole')) $('cloudRole').value = cloudProfile.role || 'staff';
       renderCloudStatus();
