@@ -130,7 +130,7 @@
     <section id="settings" class="page">
       <div class="card"><h2>ตั้งค่าหลังบ้าน</h2><p class="small">ต้องใส่รหัส 4842 ก่อน ถึงจะแก้ไขจุดแจ้งเตือนขั้นต่ำและลบข้อมูลได้</p><div class="row2"><div><label>รหัสหลังบ้าน</label><input id="adminPass" type="password" placeholder="ใส่รหัส" /></div><div><label>ผู้รับผิดชอบ</label><input id="settingPerson" placeholder="ชื่อผู้แก้ไข" /></div></div><div class="actions" style="margin-top:10px"><button class="btn" onclick="unlockAdmin()">ปลดล็อก</button><button class="btn gray" onclick="lockAdmin()">ล็อก</button></div><div id="adminStatus" class="small" style="margin-top:8px">สถานะ: ยังไม่ปลดล็อก</div></div>
       <div class="card"><h2>ตั้งค่าขั้นต่ำสินค้า</h2><div class="table-wrap"><table><thead><tr><th>สินค้า</th><th>หมวด</th><th>คงเหลือ</th><th>ขั้นต่ำ</th><th>แก้ไข</th></tr></thead><tbody id="settingStockTable"></tbody></table></div></div>
-      <div class="card"><h2>ออนไลน์ / Cloud Sync ฟรี</h2><p class="small">ใช้ Firebase Spark Plan ฟรี: ล็อกอินอีเมลเดียวกันบนโทรศัพท์ iPad และคอม ข้อมูลจะซิงก์กัน</p><div class="row2"><div><label>Email</label><input id="cloudEmail" type="email" placeholder="email สำหรับเข้าใช้"></div><div><label>Password</label><input id="cloudPassword" type="password" placeholder="รหัสผ่านอย่างน้อย 6 ตัว"></div></div><label>Firebase Config</label><textarea id="firebaseConfigText" placeholder="วาง firebaseConfig จาก Firebase Console ที่นี่"></textarea><div class="actions" style="margin-top:10px"><button class="btn" onclick="saveFirebaseConfig()">บันทึก Config</button><button class="btn green" onclick="cloudSignUp()">สมัคร/สร้างบัญชี</button><button class="btn" onclick="cloudLogin()">เข้าสู่ระบบ</button><button class="btn gray" onclick="cloudLogout()">ออกจากระบบ</button></div><div id="cloudStatus" class="small" style="margin-top:8px">Cloud: ยังไม่ได้เชื่อมต่อ</div></div>
+      <div class="card"><h2>ออนไลน์ / Cloud Sync ฟรี แบบโปร</h2><p class="small"><b>หลายอีเมลใช้ข้อมูลเดียวกันได้</b> โดยทุกคนต้องใส่รหัสร้าน/บริษัทเดียวกัน เช่น <b>stock-main</b></p><div class="row"><div><label>Email สำหรับสมัคร/เข้าใช้</label><input id="cloudEmail" type="email" placeholder="เช่น staff@gmail.com"></div><div><label>Password</label><input id="cloudPassword" type="password" placeholder="อย่างน้อย 6 ตัว เช่น 123456"></div><div><label>ชื่อผู้ใช้งาน</label><input id="cloudDisplayName" placeholder="เช่น พี / พนักงานขาย"></div></div><div class="row2"><div><label>รหัสร้าน/บริษัท</label><input id="cloudCompanyId" placeholder="เช่น stock-main"></div><div><label>สิทธิ์ผู้ใช้</label><select id="cloudRole"><option value="staff">Staff</option><option value="admin">Admin</option></select></div></div><p class="small">ตัวอย่าง: เจ้าของใช้ owner@gmail.com และพนักงานใช้ staff@gmail.com ได้ แต่ต้องใส่รหัสร้านเดียวกัน ข้อมูลถึงจะเหมือนกัน</p><label>Firebase Config</label><textarea id="firebaseConfigText" placeholder="วางเฉพาะ const firebaseConfig = { ... }; ที่นี่"></textarea><div class="actions" style="margin-top:10px"><button class="btn" onclick="saveFirebaseConfig()">บันทึก Config</button><button class="btn green" onclick="cloudSignUp()">สมัคร/สร้างบัญชี</button><button class="btn" onclick="cloudLogin()">เข้าสู่ระบบ</button><button class="btn gray" onclick="cloudLogout()">ออกจากระบบ</button></div><div id="cloudStatus" class="small" style="margin-top:8px">Cloud: ยังไม่ได้เชื่อมต่อ</div><div class="small" style="margin-top:8px"><b>ถ้าสมัครไม่ได้:</b> ไป Firebase &gt; Authentication &gt; Sign-in method &gt; เปิด Email/Password ก่อน และ Password ต้อง 6 ตัวขึ้นไป</div></div>
       <div class="card"><h2>สำรองข้อมูล</h2><div class="actions"><button class="btn green" onclick="backupJSON()">Backup JSON</button><label class="btn light">นำเข้า JSON<input type="file" accept="application/json" onchange="restoreJSON(event)" class="hidden" /></label><button class="btn red" onclick="clearAll()">ล้างข้อมูลทั้งหมด</button></div></div>
     </section>
   </main>
@@ -144,6 +144,8 @@
     const KEY = 'stockFermentationManagerPRO_v4';
     const OLD_KEY = 'stockFermentationManagerPRO_v3';
     const FIREBASE_CONFIG_KEY = 'stockFermentationFirebaseConfig_v1';
+    const CLOUD_COMPANY_KEY = 'stockFermentationCompanyId_v1';
+    const CLOUD_PROFILE_KEY = 'stockFermentationProfile_v1';
     const DEFAULT_ITEMS = ['ขวด 270ml','ฝาขวด','ซีนแดง','ซีนทอง','ฉลากอินทผลัม','ฉลากพีช','ฉลากเสาวรส','ฉลากองุ่น','ฉลากสตอเบอรี่','หลังอินทผลัม','หลังสับปะรด','อินทผลัม','สับปะรด','ยีสต์','น้ำตาล'];
     const DRINK_ITEMS = ['อินทผลัม','พีช','เสาวรส','องุ่น','สตอเบอรี่'];
 
@@ -153,12 +155,16 @@
     let firebaseDb = null;
     let cloudUser = null;
     let cloudDocRef = null;
+    let cloudCompanyId = localStorage.getItem(CLOUD_COMPANY_KEY) || ''; 
+    let cloudProfile = safeParseProfile(localStorage.getItem(CLOUD_PROFILE_KEY));
     let unsubscribeCloud = null;
     let cloudSaveTimer = null;
     let cloudReady = false;
     let applyingCloudData = false;
 
     function $(id){ return document.getElementById(id); }
+    function safeParseProfile(raw){ try { return raw ? JSON.parse(raw) : {name:'',role:'staff'}; } catch(e){ return {name:'',role:'staff'}; } }
+    function normalizeCompanyId(v){ return String(v || '').trim().toLowerCase().replace(/[^a-z0-9_-]/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,''); }
     function esc(text){ return String(text == null ? '' : text).replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch])); }
     function num(v){ const n = Number(v || 0); return Number.isFinite(n) ? n : 0; }
     function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
@@ -336,13 +342,17 @@
         cloudUser = user;
         if (unsubscribeCloud) { unsubscribeCloud(); unsubscribeCloud = null; }
         cloudReady = false;
-        if (user) startCloudListener(user.uid);
+        cloudCompanyId = localStorage.getItem(CLOUD_COMPANY_KEY) || cloudCompanyId || '';
+        cloudProfile = safeParseProfile(localStorage.getItem(CLOUD_PROFILE_KEY));
+        if (user && cloudCompanyId) startCloudListener(cloudCompanyId);
         renderCloudStatus();
       });
       return true;
     }
-    function startCloudListener(uid){
-      cloudDocRef = firebaseDb.collection('users').doc(uid).collection('app').doc('main');
+    function startCloudListener(companyId){
+      companyId = normalizeCompanyId(companyId);
+      if (!companyId) { renderCloudStatus('Cloud: ต้องใส่รหัสร้าน/บริษัทก่อน'); return; }
+      cloudDocRef = firebaseDb.collection('companies').doc(companyId).collection('app').doc('main');
       unsubscribeCloud = cloudDocRef.onSnapshot(snap => {
         if (snap.exists && snap.data() && snap.data().db) {
           applyingCloudData = true;
@@ -361,7 +371,7 @@
       if (applyingCloudData || !cloudDocRef) return;
       clearTimeout(cloudSaveTimer);
       cloudSaveTimer = setTimeout(() => {
-        cloudDocRef.set({db:normalizeDb(db), updatedAt:new Date().toISOString()}, {merge:true}).then(() => { cloudReady = true; renderCloudStatus('Cloud: บันทึกข้อมูลแล้ว'); }).catch(e => renderCloudStatus('Cloud Save Error: ' + e.message));
+        cloudDocRef.set({db:normalizeDb(db), updatedAt:new Date().toISOString(), companyId:cloudCompanyId, lastUser:cloudUser ? cloudUser.email : '', lastProfile:cloudProfile}, {merge:true}).then(() => { cloudReady = true; renderCloudStatus('Cloud: บันทึกข้อมูลแล้ว'); }).catch(e => renderCloudStatus('Cloud Save Error: ' + e.message));
       }, force ? 0 : 600);
     }
     function renderCloudStatus(msg){
@@ -370,11 +380,60 @@
       if (msg) { el.textContent = msg; return; }
       if (!getFirebaseConfig()) el.textContent = 'Cloud: ยังไม่ได้ใส่ Firebase Config';
       else if (!cloudUser) el.textContent = 'Cloud: มี Config แล้ว แต่ยังไม่ได้เข้าสู่ระบบ';
-      else el.textContent = 'Cloud: เชื่อมต่อแล้ว (' + cloudUser.email + ')' + (cloudReady ? ' - Sync พร้อมใช้งาน' : ' - กำลังเชื่อมต่อ');
+      else if (!cloudCompanyId) el.textContent = 'Cloud: เข้าสู่ระบบแล้ว แต่ยังไม่ได้ใส่รหัสร้าน/บริษัท';
+      else el.textContent = 'Cloud: เชื่อมต่อแล้ว | ร้าน: ' + cloudCompanyId + ' | ผู้ใช้: ' + cloudUser.email + ' | สิทธิ์: ' + (cloudProfile.role || 'staff') + (cloudReady ? ' - Sync พร้อมใช้งาน' : ' - กำลังเชื่อมต่อ');
     }
-    function cloudSignUp(){ if (!initFirebaseApp()) return alert('กรุณาวาง Firebase Config และกดบันทึกก่อน'); firebaseAuth.createUserWithEmailAndPassword($('cloudEmail').value, $('cloudPassword').value).catch(e => alert(e.message)); }
-    function cloudLogin(){ if (!initFirebaseApp()) return alert('กรุณาวาง Firebase Config และกดบันทึกก่อน'); firebaseAuth.signInWithEmailAndPassword($('cloudEmail').value, $('cloudPassword').value).catch(e => alert(e.message)); }
-    function cloudLogout(){ if (firebaseAuth) firebaseAuth.signOut(); }
+    function readCloudForm(){
+      const email = $('cloudEmail').value.trim();
+      const password = $('cloudPassword').value;
+      const name = $('cloudDisplayName').value.trim();
+      const role = $('cloudRole').value || 'staff';
+      const companyId = normalizeCompanyId($('cloudCompanyId').value);
+      if (!email) throw new Error('กรุณาใส่ Email');
+      if (!password || password.length < 6) throw new Error('Password ต้องมีอย่างน้อย 6 ตัว');
+      if (!name) throw new Error('กรุณาใส่ชื่อผู้ใช้งาน');
+      if (!companyId) throw new Error('กรุณาใส่รหัสร้าน/บริษัท เช่น stock-main');
+      return {email,password,name,role,companyId};
+    }
+    function saveCloudProfile(form){
+      cloudCompanyId = form.companyId;
+      cloudProfile = {name:form.name, role:form.role, email:form.email};
+      localStorage.setItem(CLOUD_COMPANY_KEY, cloudCompanyId);
+      localStorage.setItem(CLOUD_PROFILE_KEY, JSON.stringify(cloudProfile));
+    }
+    function cloudSignUp(){
+      if (!initFirebaseApp()) return alert('กรุณาวาง Firebase Config และกดบันทึกก่อน');
+      let form;
+      try { form = readCloudForm(); } catch(e) { return alert(e.message); }
+      saveCloudProfile(form);
+      firebaseAuth.createUserWithEmailAndPassword(form.email, form.password)
+        .then(cred => {
+          return firebaseDb.collection('companies').doc(form.companyId).collection('members').doc(cred.user.uid).set({email:form.email,name:form.name,role:form.role,createdAt:new Date().toISOString()},{merge:true});
+        })
+        .then(() => startCloudListener(form.companyId))
+        .catch(e => alert('สมัครไม่ได้: ' + e.message));
+    }
+    function cloudLogin(){
+      if (!initFirebaseApp()) return alert('กรุณาวาง Firebase Config และกดบันทึกก่อน');
+      let form;
+      try { form = readCloudForm(); } catch(e) { return alert(e.message); }
+      saveCloudProfile(form);
+      firebaseAuth.signInWithEmailAndPassword(form.email, form.password)
+        .then(cred => {
+          return firebaseDb.collection('companies').doc(form.companyId).collection('members').doc(cred.user.uid).set({email:form.email,name:form.name,role:form.role,lastLoginAt:new Date().toISOString()},{merge:true});
+        })
+        .then(() => startCloudListener(form.companyId))
+        .catch(e => alert('เข้าสู่ระบบไม่ได้: ' + e.message));
+    }
+    function cloudLogout(){
+      cloudCompanyId = '';
+      cloudProfile = {name:'',role:'staff'};
+      localStorage.removeItem(CLOUD_COMPANY_KEY);
+      localStorage.removeItem(CLOUD_PROFILE_KEY);
+      if (unsubscribeCloud) { unsubscribeCloud(); unsubscribeCloud = null; }
+      if (firebaseAuth) firebaseAuth.signOut();
+      renderCloudStatus('Cloud: ออกจากระบบแล้ว');
+    }
 
     function toCSV(rows){ if (!rows || !rows.length) return ''; const keys = Object.keys(rows[0]); const csvEscape = v => '"' + String(v == null ? '' : v).replace(/"/g,'""') + '"'; return '\uFEFF' + [keys.join(',')].concat(rows.map(r => keys.map(k => csvEscape(r[k])).join(','))).join('\n'); }
     function download(name,content,type){ const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([content],{type:type || 'text/csv;charset=utf-8'})); a.download = name; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(a.href); }
@@ -395,11 +454,19 @@
       test('safe HTML escape', () => assert(esc('<x>') === '&lt;x&gt;'));
       test('firebase config parser object', () => assert(parseFirebaseConfigText('{apiKey:"x", projectId:"p"}').projectId === 'p'));
       test('normalizeDb keeps default items', () => assert(normalizeDb({}).itemNames.includes('ขวด 270ml')));
+      test('company id normalize', () => assert(normalizeCompanyId('Stock Main!!') === 'stock-main'));
+      test('profile parser fallback', () => assert(safeParseProfile('{bad').role === 'staff'));
       $('testResult').textContent = results.join('\n');
     }
 
     function renderAll(){ renderOptions(); renderStock(); renderMoves(); renderFerments(); renderNotes(); renderDashboard(); renderReports(); renderSettings(); }
     initFirebaseApp();
+    setTimeout(function(){
+      if ($('cloudCompanyId')) $('cloudCompanyId').value = cloudCompanyId || '';
+      if ($('cloudDisplayName')) $('cloudDisplayName').value = cloudProfile.name || '';
+      if ($('cloudRole')) $('cloudRole').value = cloudProfile.role || 'staff';
+      renderCloudStatus();
+    }, 0);
     renderAll();
   </script>
 </body>
